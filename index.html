@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlashPark - Sistema Premium de Estacionamento</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="bg-yellow-400 p-2 rounded-lg text-slate-900 font-extrabold text-xl">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold leading-none">FlashPark <span class="text-xs text-yellow-400 font-mono">v2.0</span></h1>
+          <p class="text-xs text-slate-400">Gestão Inteligente de Estacionamento</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 text-xs">
+        <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full flex items-center gap-2">
+          <span class="w-2 h-2 bg-emerald-400 rounded-full animate-ping"></span> Operacional
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-medium text-slate-400 uppercase">Capacidade</p>
+          <p id="kpi-total" class="text-2xl font-black">20</p>
+        </div>
+        <i class="fa-solid fa-warehouse text-2xl text-slate-600"></i>
+      </div>
+      <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-medium text-slate-400 uppercase">Ocupadas</p>
+          <p id="kpi-ocupadas" class="text-2xl font-black text-amber-400">0</p>
+        </div>
+        <i class="fa-solid fa-car text-2xl text-amber-500/30"></i>
+      </div>
+      <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-medium text-slate-400 uppercase">Livres</p>
+          <p id="kpi-livres" class="text-2xl font-black text-emerald-400">20</p>
+        </div>
+        <i class="fa-solid fa-circle-check text-2xl text-emerald-500/30"></i>
+      </div>
+      <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-medium text-slate-400 uppercase">Caixa Hoje</p>
+          <p id="kpi-faturamento" class="text-2xl font-black text-indigo-400">R$ 0,00</p>
+        </div>
+        <i class="fa-solid fa-sack-dollar text-2xl text-indigo-500/30"></i>
+      </div>
+    </section>
+
+    <!-- Mapa Interativo de Vagas -->
+    <section class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+          <i class="fa-solid fa-border-all text-yellow-400"></i> Mapa do Pátio em Tempo Real
+        </h2>
+        <div class="flex gap-3 text-xs text-slate-400">
+          <span class="flex items-center gap-1"><span class="w-3 h-3 bg-emerald-500/20 border border-emerald-500 rounded"></span> Livre</span>
+          <span class="flex items-center gap-1"><span class="w-3 h-3 bg-rose-500/20 border border-rose-500 rounded"></span> Ocupada</span>
+        </div>
+      </div>
+      <div id="grid-vagas" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-10 gap-2">
+        <!-- Renderizado dinamicamente pelo JS -->
+      </div>
+    </section>
+
+    <!-- Formulário + Tabela -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Form Entrada -->
+      <section class="bg-slate-800 p-5 rounded-xl border border-slate-700 h-fit">
+        <h2 class="text-base font-bold mb-4 flex items-center gap-2 text-indigo-400">
+          <i class="fa-solid fa-right-to-bracket"></i> Entrada de Veículo
+        </h2>
+        <form id="form-entrada" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">PLACA</label>
+            <input type="text" id="placa" placeholder="ABC-1234" maxlength="8" required
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 font-mono uppercase focus:border-indigo-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">MODELO / COR</label>
+            <input type="text" id="modelo" placeholder="Ex: Civic Preto" required
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">CATEGORIA</label>
+            <select id="categoria" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none">
+              <option value="1">Passeio (R$ 10/h)</option>
+              <option value="2">Motocicleta (R$ 5/h)</option>
+              <option value="3">Utilitário (R$ 15/h)</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 font-bold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+            <i class="fa-solid fa-plus"></i> Confirmar Entrada
+          </button>
+        </form>
+      </section>
+
+      <!-- Lista / Tabela -->
+      <section class="lg:col-span-2 bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <h2 class="text-base font-bold flex items-center gap-2 text-slate-200">
+            <i class="fa-solid fa-list-check text-yellow-400"></i> Veículos no Pátio
+          </h2>
+          <!-- Busca rápida -->
+          <div class="relative w-full sm:w-64">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-500"></i>
+            <input type="text" id="busca" oninput="renderizarTabela()" placeholder="Buscar por placa ou modelo..." 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs focus:border-indigo-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="text-xs text-slate-400 uppercase border-b border-slate-700">
+              <tr>
+                <th class="py-2 px-3">Vaga</th>
+                <th class="py-2 px-3">Placa</th>
+                <th class="py-2 px-3">Modelo</th>
+                <th class="py-2 px-3">Entrada</th>
+                <th class="py-2 px-3 text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-veiculos" class="divide-y divide-slate-700/50">
+              <!-- Renderizado via JS -->
+            </tbody>
+          </table>
+          <div id="empty-state" class="text-center py-8 text-slate-500 text-xs">
+            Nenhum veículo no pátio no momento.
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modal Checkout -->
+  <div id="modal-checkout" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-800 border border-slate-700 rounded-xl max-w-sm w-full p-5 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+        <h3 class="font-bold flex items-center gap-2 text-indigo-400"><i class="fa-solid fa-receipt"></i> Checkout</h3>
+        <button onclick="fecharModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="space-y-2 text-xs">
+        <div class="flex justify-between"><span class="text-slate-400">Placa:</span><span id="modal-placa" class="font-mono font-bold text-white"></span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Permanência:</span><span id="modal-tempo" class="font-bold text-amber-400"></span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Tolerância (15m):</span><span id="modal-tolerancia" class="font-semibold"></span></div>
+      </div>
+
+      <div class="bg-slate-900 p-3 rounded-lg text-center">
+        <span class="text-xs text-slate-400 uppercase font-bold">Total a Cobrar</span>
+        <div id="modal-valor" class="text-3xl font-black text-emerald-400">R$ 0,00</div>
+      </div>
+
+      <button onclick="confirmarSaida()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold py-2.5 rounded-lg transition-colors flex justify-center items-center gap-2">
+        <i class="fa-solid fa-check"></i> Registrar Pagamento
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_VAGAS = 20;
+    const TARIFAS = { "1": 10.00, "2": 5.00, "3": 15.00 };
+    
+    // Estado com LocalStorage
+    let patios = JSON.parse(localStorage.getItem('flashpark_patio')) || [];
+    let faturamento = parseFloat(localStorage.getItem('flashpark_caixa')) || 0;
+    let vCheckoutIdx = null;
+
+    const form = document.getElementById('form-entrada');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if(patios.length >= TOTAL_VAGAS) return alert('Pátio Lotado!');
+
+      const placa = document.getElementById('placa').value.toUpperCase().trim();
+      if(patios.some(v => v.placa === placa)) return alert('Placa já registrada!');
+
+      // Encontrar primeira vaga livre numérica (1 a 20)
+      const vagasOcupadas = patios.map(v => v.vaga);
+      let vagaLivre = 1;
+      while(vagasOcupadas.includes(vagaLivre)) vagaLivre++;
+
+      patios.push({
+        vaga: vagaLivre,
+        placa,
+        modelo: document.getElementById('modelo').value.trim(),
+        categoria: document.getElementById('categoria').value,
+        entrada: new Date().toISOString()
+      });
+
+      salvarEstado();
+      form.reset();
+      atualizar();
+    });
+
+    function salvarEstado() {
+      localStorage.setItem('flashpark_patio', JSON.stringify(patios));
+      localStorage.setItem('flashpark_caixa', faturamento.toString());
+    }
+
+    function atualizar() {
+      renderizarKPIs();
+      renderizarMapa();
+      renderizarTabela();
+    }
+
+    function renderizarKPIs() {
+      document.getElementById('kpi-total').innerText = TOTAL_VAGAS;
+      document.getElementById('kpi-ocupadas').innerText = patios.length;
+      document.getElementById('kpi-livres').innerText = TOTAL_VAGAS - patios.length;
+      document.getElementById('kpi-faturamento').innerText = `R$ ${faturamento.toFixed(2)}`;
+    }
+
+    function renderizarMapa() {
+      const grid = document.getElementById('grid-vagas');
+      grid.innerHTML = '';
+
+      for(let i = 1; i <= TOTAL_VAGAS; i++) {
+        const veiculo = patios.find(v => v.vaga === i);
+        const card = document.createElement('div');
+        
+        if(veiculo) {
+          card.className = "bg-rose-500/10 border border-rose-500/40 p-2 rounded-lg text-center cursor-pointer hover:bg-rose-500/20 transition-all";
+          card.onclick = () => abrirCheckout(patios.indexOf(veiculo));
+          card.innerHTML = `<span class="text-[10px] block text-rose-400 font-bold">VAGA ${i}</span><span class="font-mono text-xs font-bold text-white">${veiculo.placa}</span>`;
+        } else {
+          card.className = "bg-emerald-500/5 border border-emerald-500/20 p-2 rounded-lg text-center opacity-60";
+          card.innerHTML = `<span class="text-[10px] block text-emerald-500/60 font-bold">VAGA ${i}</span><span class="text-xs text-emerald-400/40">LIVRE</span>`;
+        }
+        grid.appendChild(card);
+      }
+    }
+
+    function renderizarTabela() {
+      const tbody = document.getElementById('tabela-veiculos');
+      const busca = document.getElementById('busca').value.toLowerCase();
+      const empty = document.getElementById('empty-state');
+      
+      tbody.innerHTML = '';
+
+      const filtrados = patios.filter(v => 
+        v.placa.toLowerCase().includes(busca) || v.modelo.toLowerCase().includes(busca)
+      );
+
+      if(filtrados.length === 0) {
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        filtrados.forEach((v) => {
+          const idxReal = patios.indexOf(v);
+          const hora = new Date(v.entrada).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-slate-700/30";
+          tr.innerHTML = `
+            <td class="py-2 px-3 font-bold text-slate-400">#${v.vaga}</td>
+            <td class="py-2 px-3 font-mono font-bold text-indigo-300">${v.placa}</td>
+            <td class="py-2 px-3 text-slate-300">${v.modelo}</td>
+            <td class="py-2 px-3 text-slate-400">${hora}</td>
+            <td class="py-2 px-3 text-right">
+              <button onclick="abrirCheckout(${idxReal})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded text-xs font-semibold">
+                Saída
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    }
+
+    function abrirCheckout(idx) {
+      vCheckoutIdx = idx;
+      const v = patios[idx];
+      const entrada = new Date(v.entrada);
+      const agora = new Date();
+      
+      const diffMinutos = Math.max(1, Math.ceil((agora - entrada) / (1000 * 60)));
+      
+      let valor = 0;
+      let tolerou = false;
+
+      if(diffMinutos <= 15) {
+        tolerou = true;
+      } else {
+        const horas = Math.ceil(diffMinutos / 60);
+        valor = horas * TARIFAS[v.categoria];
+      }
+
+      document.getElementById('modal-placa').innerText = v.placa;
+      document.getElementById('modal-tempo').innerText = `${diffMinutos} minuto(s)`;
+      
+      const elemTol = document.getElementById('modal-tolerancia');
+      if(tolerou) {
+        elemTol.innerText = "Isento (Tolerância)";
+        elemTol.className = "font-semibold text-emerald-400";
+      } else {
+        elemTol.innerText = "Excedida";
+        elemTol.className = "font-semibold text-rose-400";
+      }
+
+      document.getElementById('modal-valor').innerText = `R$ ${valor.toFixed(2)}`;
+      document.getElementById('modal-checkout').dataset.valor = valor;
+      document.getElementById('modal-checkout').classList.remove('hidden');
+    }
+
+    function fecharModal() {
+      document.getElementById('modal-checkout').classList.add('hidden');
+    }
+
+    function confirmarSaida() {
+      const valor = parseFloat(document.getElementById('modal-checkout').dataset.valor || 0);
+      faturamento += valor;
+      patios.splice(vCheckoutIdx, 1);
+      salvarEstado();
+      fecharModal();
+      atualizar();
+    }
+
+    // Inicialização
+    atualizar();
+  </script>
+</body>
+</html>
