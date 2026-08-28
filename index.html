@@ -8,13 +8,8 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      font-family: 'Inter', sans-serif;
-    }
-    
-    .font-luxo {
-      font-family: 'Playfair Display', serif;
-    }
+    * { font-family: 'Inter', sans-serif; }
+    .font-luxo { font-family: 'Playfair Display', serif; }
     
     body {
       background: #0a0a0f;
@@ -31,9 +26,8 @@
       border: 1px solid rgba(212, 175, 55, 0.15);
     }
     
-    .text-gold {
-      color: #d4af37;
-    }
+    .text-gold { color: #d4af37; }
+    .border-gold { border-color: rgba(212, 175, 55, 0.3); }
     
     .bg-gold {
       background: linear-gradient(135deg, #d4af37 0%, #f5d77b 50%, #d4af37 100%);
@@ -51,8 +45,6 @@
       text-align: center;
       cursor: pointer;
       transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      position: relative;
-      overflow: hidden;
       min-height: 60px;
       display: flex;
       flex-direction: column;
@@ -102,6 +94,16 @@
     
     .input-luxo::placeholder {
       color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .input-luxo.error {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+    }
+    
+    .input-luxo.success {
+      border-color: #22c55e !important;
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);
     }
     
     .btn-luxo {
@@ -176,9 +178,9 @@
       border-radius: 20px;
       font-size: 11px;
       font-weight: 600;
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
       transition: all 0.3s ease;
       margin: 3px 0;
     }
@@ -191,6 +193,9 @@
       cursor: pointer;
       opacity: 0.4;
       transition: all 0.3s ease;
+      background: none;
+      border: none;
+      color: #d4af37;
     }
     
     .badge-placa .remove-btn:hover {
@@ -295,8 +300,8 @@
       color: rgba(255, 255, 255, 0.15);
     }
     
-    .text-gold-dim {
-      color: rgba(212, 175, 55, 0.6);
+    .toast-hidden {
+      display: none !important;
     }
   </style>
 </head>
@@ -386,7 +391,7 @@
             <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">PLACA</label>
             <div class="relative">
               <input type="text" id="placa" placeholder="ABC-1234" maxlength="8" required
-                class="input-luxo font-mono uppercase">
+                class="input-luxo font-mono uppercase" autocomplete="off">
               <div id="placa-status" class="absolute right-4 top-3.5 hidden">
                 <i class="fa-solid fa-circle-check text-emerald-400"></i>
               </div>
@@ -424,7 +429,7 @@
 
         <form id="form-cadastro-placa" class="flex gap-2 mb-4">
           <input type="text" id="nova-placa" placeholder="ABC-1234" maxlength="8"
-            class="input-luxo flex-1 font-mono uppercase text-sm">
+            class="input-luxo flex-1 font-mono uppercase text-sm" autocomplete="off">
           <button type="submit" class="btn-luxo-outline text-xs px-4 whitespace-nowrap">
             <i class="fa-solid fa-plus"></i> Add
           </button>
@@ -518,7 +523,7 @@
     </div>
   </div>
 
-  <div id="toast" class="toast-premium hidden">
+  <div id="toast" class="toast-premium toast-hidden">
     <div class="glass-premium rounded-2xl px-6 py-4" style="border-color: rgba(212, 175, 55, 0.15);">
       <div class="flex items-center gap-4">
         <div id="toast-icon" class="text-2xl"></div>
@@ -531,6 +536,9 @@
   </div>
 
   <script>
+    // ============================================
+    // CONFIGURAÇÕES
+    // ============================================
     const TOTAL_VAGAS = 20;
     const TARIFAS = { "1": 10.00, "2": 5.00, "3": 15.00 };
 
@@ -547,11 +555,17 @@
       { placa: 'BCD-8901', modelo: 'BMW 7 Series' },
     ];
 
+    // ============================================
+    // ESTADO
+    // ============================================
     let patios = JSON.parse(localStorage.getItem('flashpark_patio')) || [];
     let faturamento = parseFloat(localStorage.getItem('flashpark_caixa')) || 0;
     let placasAutorizadas = JSON.parse(localStorage.getItem('flashpark_placas')) || [];
     let vCheckoutIdx = null;
 
+    // ============================================
+    // ELEMENTOS DOM
+    // ============================================
     const formEntrada = document.getElementById('form-entrada');
     const formCadastro = document.getElementById('form-cadastro-placa');
     const inputPlaca = document.getElementById('placa');
@@ -559,6 +573,9 @@
     const inputModelo = document.getElementById('modelo');
     const btnEntrada = document.getElementById('btn-entrada');
 
+    // ============================================
+    // FUNÇÕES DE VALIDAÇÃO
+    // ============================================
     function validarFormatoPlaca(placa) {
       const padraoAntigo = /^[A-Z]{3}-?[0-9]{4}$/;
       const padraoMercosul = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
@@ -574,6 +591,9 @@
       return patios.some(v => v.placa === placa.toUpperCase().trim());
     }
 
+    // ============================================
+    // VALIDAÇÃO EM TEMPO REAL
+    // ============================================
     function validarPlacaEmTempoReal() {
       const placa = inputPlaca.value.toUpperCase().trim();
       const statusDiv = document.getElementById('placa-status');
@@ -588,7 +608,7 @@
       }
 
       if (!validarFormatoPlaca(placa)) {
-        inputPlaca.className = 'input-luxo font-mono uppercase border-rose-500/30';
+        inputPlaca.className = 'input-luxo font-mono uppercase error';
         statusDiv.classList.add('hidden');
         mensagemDiv.classList.remove('hidden');
         mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
@@ -598,7 +618,7 @@
       }
 
       if (placaIsOcupada(placa)) {
-        inputPlaca.className = 'input-luxo font-mono uppercase border-rose-500/30';
+        inputPlaca.className = 'input-luxo font-mono uppercase error';
         statusDiv.classList.add('hidden');
         mensagemDiv.classList.remove('hidden');
         mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
@@ -607,7 +627,7 @@
         return;
       }
 
-      inputPlaca.className = 'input-luxo font-mono uppercase border-emerald-500/30';
+      inputPlaca.className = 'input-luxo font-mono uppercase success';
       statusDiv.classList.remove('hidden');
       mensagemDiv.classList.remove('hidden');
 
@@ -622,9 +642,17 @@
       }
     }
 
-    inputPlaca.addEventListener('input', validarPlacaEmTempoReal);
+    // Máscara automática para placa
+    inputPlaca.addEventListener('input', function(e) {
+      let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (valor.length > 3 && valor.length <= 7) {
+        valor = valor.substring(0, 3) + '-' + valor.substring(3);
+      }
+      this.value = valor;
+      validarPlacaEmTempoReal();
+    });
 
-    inputPlaca.addEventListener('keyup', function(e) {
+    inputNovaPlaca.addEventListener('input', function(e) {
       let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
       if (valor.length > 3 && valor.length <= 7) {
         valor = valor.substring(0, 3) + '-' + valor.substring(3);
@@ -632,6 +660,9 @@
       this.value = valor;
     });
 
+    // ============================================
+    // PLACAS AUTORIZADAS
+    // ============================================
     function adicionarPlaca(placa) {
       const placaLimpa = placa.toUpperCase().trim();
       if (!placaLimpa) { mostrarToast('error', 'Erro', 'Digite uma placa.'); return false; }
@@ -673,7 +704,7 @@
 
     function importarCarrosLuxo() {
       let adicionadas = 0;
-      CARROS_LUXO.forEach(({ placa, modelo }) => {
+      CARROS_LUXO.forEach(({ placa }) => {
         if (!placasAutorizadas.includes(placa)) {
           placasAutorizadas.push(placa);
           adicionadas++;
@@ -703,7 +734,7 @@
       container.innerHTML = placasAutorizadas.map(p => {
         const ocupado = patios.some(v => v.placa === p);
         return `
-          <div class="badge-placa w-full justify-between">
+          <div class="badge-placa">
             <span>
               ${p}
               ${ocupado ? '<span class="ocupado"><i class="fa-solid fa-circle"></i> ocupado</span>' : ''}
@@ -716,6 +747,9 @@
       }).join('');
     }
 
+    // ============================================
+    // TOAST
+    // ============================================
     function mostrarToast(tipo, titulo, mensagem) {
       const toast = document.getElementById('toast');
       const icon = document.getElementById('toast-icon');
@@ -733,12 +767,16 @@
       titleEl.textContent = titulo;
       msgEl.textContent = mensagem;
       
-      toast.classList.remove('hidden');
-      setTimeout(() => {
-        toast.classList.add('hidden');
+      toast.classList.remove('toast-hidden');
+      clearTimeout(toast._timeout);
+      toast._timeout = setTimeout(() => {
+        toast.classList.add('toast-hidden');
       }, 4000);
     }
 
+    // ============================================
+    // ENTRADA DE VEÍCULO
+    // ============================================
     formEntrada.addEventListener('submit', (e) => {
       e.preventDefault();
       
@@ -751,4 +789,216 @@
       if (patios.length >= TOTAL_VAGAS) { mostrarToast('error', 'Erro', 'Pátio lotado!'); return; }
       
       if (!placaIsAutorizada(placa)) {
-        if (!confirm
+        if (!confirm(`Placa "${placa}" não está autorizada. Deseja adicioná-la?`)) {
+          return;
+        }
+        placasAutorizadas.push(placa);
+        salvarEstado();
+        renderizarPlacasAutorizadas();
+      }
+      
+      const vagasOcupadas = patios.map(v => v.vaga);
+      let vagaLivre = 1;
+      while (vagasOcupadas.includes(vagaLivre)) vagaLivre++;
+      
+      patios.push({
+        vaga: vagaLivre,
+        placa: placa,
+        modelo: modelo,
+        categoria: document.getElementById('categoria').value,
+        entrada: new Date().toISOString()
+      });
+      
+      salvarEstado();
+      formEntrada.reset();
+      inputPlaca.className = 'input-luxo font-mono uppercase';
+      document.getElementById('placa-status').classList.add('hidden');
+      document.getElementById('placa-mensagem').classList.add('hidden');
+      btnEntrada.disabled = false;
+      
+      atualizar();
+      renderizarPlacasAutorizadas();
+      mostrarToast('success', 'Entrada Registrada', `${placa} - Vaga #${vagaLivre}`);
+    });
+
+    // ============================================
+    // CADASTRO DE NOVA PLACA
+    // ============================================
+    formCadastro.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const placa = inputNovaPlaca.value.toUpperCase().trim();
+      if (adicionarPlaca(placa)) {
+        inputNovaPlaca.value = '';
+      }
+    });
+
+    // ============================================
+    // SALVAR ESTADO
+    // ============================================
+    function salvarEstado() {
+      localStorage.setItem('flashpark_patio', JSON.stringify(patios));
+      localStorage.setItem('flashpark_caixa', faturamento.toString());
+      localStorage.setItem('flashpark_placas', JSON.stringify(placasAutorizadas));
+    }
+
+    // ============================================
+    // RENDERIZAÇÃO
+    // ============================================
+    function atualizar() {
+      renderizarKPIs();
+      renderizarMapa();
+      renderizarTabela();
+    }
+
+    function renderizarKPIs() {
+      document.getElementById('kpi-total').innerText = TOTAL_VAGAS;
+      document.getElementById('kpi-ocupadas').innerText = patios.length;
+      document.getElementById('kpi-livres').innerText = TOTAL_VAGAS - patios.length;
+      document.getElementById('kpi-faturamento').innerText = `R$ ${faturamento.toFixed(2)}`;
+      document.getElementById('total-veiculos').textContent = patios.length;
+    }
+
+    function renderizarMapa() {
+      const grid = document.getElementById('grid-vagas');
+      grid.innerHTML = '';
+
+      for (let i = 1; i <= TOTAL_VAGAS; i++) {
+        const veiculo = patios.find(v => v.vaga === i);
+        const card = document.createElement('div');
+        
+        if (veiculo) {
+          card.className = "vaga-card vaga-ocupada";
+          card.onclick = () => abrirCheckout(patios.indexOf(veiculo));
+          card.innerHTML = `
+            <span class="text-[10px] block text-gold/50 font-bold">VAGA ${i}</span>
+            <span class="font-mono text-xs font-bold placa-text">${veiculo.placa}</span>
+            <span class="text-[8px] block text-white/30 mt-0.5 truncate max-w-full">${veiculo.modelo}</span>
+          `;
+        } else {
+          card.className = "vaga-card vaga-livre";
+          card.innerHTML = `
+            <span class="vaga-number">VAGA ${i}</span>
+            <span class="text-xs status-text">LIVRE</span>
+          `;
+        }
+        grid.appendChild(card);
+      }
+    }
+
+    function renderizarTabela() {
+      const tbody = document.getElementById('tabela-veiculos');
+      const busca = document.getElementById('busca').value.toLowerCase();
+      const empty = document.getElementById('empty-state');
+      
+      tbody.innerHTML = '';
+
+      const filtrados = patios.filter(v => 
+        v.placa.toLowerCase().includes(busca) || v.modelo.toLowerCase().includes(busca)
+      );
+
+      if (filtrados.length === 0) {
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        filtrados.forEach((v) => {
+          const idxReal = patios.indexOf(v);
+          const hora = new Date(v.entrada).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-white/5 transition-colors cursor-pointer";
+          tr.onclick = () => abrirCheckout(idxReal);
+          tr.innerHTML = `
+            <td class="py-2 px-3 font-bold text-gold/50">#${v.vaga}</td>
+            <td class="py-2 px-3 font-mono font-bold text-gold">${v.placa}</td>
+            <td class="py-2 px-3 text-white/70">${v.modelo}</td>
+            <td class="py-2 px-3 text-white/30 text-xs">${hora}</td>
+            <td class="py-2 px-3 text-right">
+              <button onclick="event.stopPropagation(); abrirCheckout(${idxReal})" class="bg-gold/10 hover:bg-gold/20 text-gold border border-gold/20 px-3 py-1 rounded-lg text-xs font-semibold transition-colors">
+                <i class="fa-solid fa-arrow-right"></i> Saída
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    }
+
+    // ============================================
+    // CHECKOUT
+    // ============================================
+    function abrirCheckout(idx) {
+      vCheckoutIdx = idx;
+      const v = patios[idx];
+      const entrada = new Date(v.entrada);
+      const agora = new Date();
+      
+      const diffMinutos = Math.max(1, Math.ceil((agora - entrada) / (1000 * 60)));
+      
+      let valor = 0;
+      let tolerou = false;
+
+      if (diffMinutos <= 15) {
+        tolerou = true;
+      } else {
+        const horas = Math.ceil(diffMinutos / 60);
+        valor = horas * TARIFAS[v.categoria];
+      }
+
+      document.getElementById('modal-placa').innerText = v.placa;
+      document.getElementById('modal-tempo').innerText = `${diffMinutos} minuto(s)`;
+      
+      const elemTol = document.getElementById('modal-tolerancia');
+      if (tolerou) {
+        elemTol.innerText = "Isento (Tolerância)";
+        elemTol.className = "font-semibold text-emerald-400";
+      } else {
+        elemTol.innerText = "Excedida";
+        elemTol.className = "font-semibold text-rose-400";
+      }
+
+      document.getElementById('modal-valor').innerText = `R$ ${valor.toFixed(2)}`;
+      document.getElementById('modal-checkout').dataset.valor = valor;
+      document.getElementById('modal-checkout').classList.remove('hidden');
+    }
+
+    function fecharModal() {
+      document.getElementById('modal-checkout').classList.add('hidden');
+    }
+
+    function confirmarSaida() {
+      const valor = parseFloat(document.getElementById('modal-checkout').dataset.valor || 0);
+      const placa = patios[vCheckoutIdx].placa;
+      faturamento += valor;
+      patios.splice(vCheckoutIdx, 1);
+      salvarEstado();
+      fecharModal();
+      atualizar();
+      renderizarPlacasAutorizadas();
+      mostrarToast('success', 'Pagamento Registrado', `${placa} - R$ ${valor.toFixed(2)}`);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') fecharModal();
+    });
+
+    // ============================================
+    // INICIALIZAÇÃO
+    // ============================================
+    if (placasAutorizadas.length === 0) {
+      CARROS_LUXO.forEach(({ placa }) => {
+        if (!placasAutorizadas.includes(placa)) {
+          placasAutorizadas.push(placa);
+        }
+      });
+      salvarEstado();
+    }
+
+    atualizar();
+    renderizarPlacasAutorizadas();
+    validarPlacaEmTempoReal();
+    
+    console.log('🔒 FlashPark Premium v2.0');
+    console.log(`📋 ${placasAutorizadas.length} placas autorizadas`);
+    console.log(`🚗 ${patios.length} veículos no pátio`);
+  </script>
+</body>
+</html>
