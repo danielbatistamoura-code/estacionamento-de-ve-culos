@@ -8,9 +8,6 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ============================================
-       DESIGN PREMIUM / LUXO
-    ============================================ */
     * {
       font-family: 'Inter', sans-serif;
     }
@@ -24,30 +21,14 @@
       background-image: 
         radial-gradient(ellipse at 10% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
         radial-gradient(ellipse at 90% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+      min-height: 100vh;
     }
     
-    /* Efeito de vidro fosco premium */
     .glass-premium {
       background: rgba(20, 20, 30, 0.7);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(212, 175, 55, 0.15);
-    }
-    
-    .glass-premium-light {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(212, 175, 55, 0.08);
-    }
-    
-    /* Borda dourada */
-    .border-gold {
-      border-color: rgba(212, 175, 55, 0.3);
-    }
-    
-    .border-gold-light {
-      border-color: rgba(212, 175, 55, 0.1);
     }
     
     .text-gold {
@@ -58,22 +39,10 @@
       background: linear-gradient(135deg, #d4af37 0%, #f5d77b 50%, #d4af37 100%);
     }
     
-    .bg-gold-dark {
-      background: linear-gradient(135deg, #b8960f 0%, #d4af37 50%, #b8960f 100%);
-    }
-    
-    /* Brilho dourado */
     .gold-glow {
       box-shadow: 0 0 30px rgba(212, 175, 55, 0.1), inset 0 0 30px rgba(212, 175, 55, 0.02);
     }
     
-    .gold-glow-hover:hover {
-      box-shadow: 0 0 50px rgba(212, 175, 55, 0.2), inset 0 0 30px rgba(212, 175, 55, 0.05);
-      transform: translateY(-2px);
-      transition: all 0.4s ease;
-    }
-    
-    /* Cards de vagas luxuosas */
     .vaga-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(212, 175, 55, 0.08);
@@ -84,22 +53,11 @@
       transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       position: relative;
       overflow: hidden;
-    }
-    
-    .vaga-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-    
-    .vaga-card:hover::before {
-      opacity: 1;
+      min-height: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
     
     .vaga-card:hover {
@@ -108,8 +66,8 @@
     }
     
     .vaga-ocupada {
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(212, 175, 55, 0.01));
-      border-color: rgba(212, 175, 55, 0.2);
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(212, 175, 55, 0.02));
+      border-color: rgba(212, 175, 55, 0.25);
     }
     
     .vaga-ocupada .placa-text {
@@ -125,7 +83,6 @@
       color: rgba(255, 255, 255, 0.2);
     }
     
-    /* Inputs estilo luxo */
     .input-luxo {
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(212, 175, 55, 0.15);
@@ -133,12 +90,12 @@
       border-radius: 12px;
       padding: 12px 16px;
       transition: all 0.3s ease;
-      font-family: 'Inter', sans-serif;
+      width: 100%;
     }
     
     .input-luxo:focus {
       border-color: rgba(212, 175, 55, 0.5);
-      box-shadow: 0 0 30px rgba(212, 175, 55, 0.05), inset 0 0 30px rgba(212, 175, 55, 0.02);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.05);
       outline: none;
       background: rgba(0, 0, 0, 0.6);
     }
@@ -147,7 +104,6 @@
       color: rgba(255, 255, 255, 0.2);
     }
     
-    /* Botão luxo */
     .btn-luxo {
       background: linear-gradient(135deg, #d4af37 0%, #f5d77b 50%, #d4af37 100%);
       color: #0a0a0f;
@@ -159,6 +115,8 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       font-size: 13px;
+      width: 100%;
+      cursor: pointer;
     }
     
     .btn-luxo:hover {
@@ -180,6 +138,7 @@
       padding: 10px 20px;
       border-radius: 12px;
       transition: all 0.3s ease;
+      cursor: pointer;
     }
     
     .btn-luxo-outline:hover {
@@ -188,7 +147,6 @@
       transform: translateY(-2px);
     }
     
-    /* Tabela luxo */
     .table-luxo thead th {
       font-weight: 600;
       text-transform: uppercase;
@@ -210,38 +168,42 @@
       background: rgba(212, 175, 55, 0.02);
     }
     
-    /* Badge de placa autorizada */
-    .badge-placa-autorizada {
+    .badge-placa {
       background: rgba(212, 175, 55, 0.08);
       border: 1px solid rgba(212, 175, 55, 0.15);
       color: #d4af37;
-      padding: 4px 12px;
+      padding: 6px 14px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       transition: all 0.3s ease;
+      margin: 3px 0;
     }
     
-    .badge-placa-autorizada:hover {
+    .badge-placa:hover {
       background: rgba(212, 175, 55, 0.15);
-      transform: translateX(3px);
     }
     
-    .badge-placa-autorizada .remove-btn {
+    .badge-placa .remove-btn {
       cursor: pointer;
       opacity: 0.4;
       transition: all 0.3s ease;
     }
     
-    .badge-placa-autorizada .remove-btn:hover {
+    .badge-placa .remove-btn:hover {
       opacity: 1;
       color: #ef4444;
     }
     
-    /* Scrollbar customizada */
+    .badge-placa .ocupado {
+      font-size: 8px;
+      color: #f59e0b;
+      margin-left: 4px;
+    }
+    
     ::-webkit-scrollbar {
       width: 4px;
       height: 4px;
@@ -253,11 +215,7 @@
       background: rgba(212, 175, 55, 0.3);
       border-radius: 10px;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(212, 175, 55, 0.5);
-    }
     
-    /* Toast premium */
     .toast-premium {
       position: fixed;
       bottom: 30px;
@@ -272,14 +230,12 @@
       to { transform: translateX(0) scale(1); opacity: 1; }
     }
     
-    /* Divider dourado */
     .divider-gold {
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
       margin: 20px 0;
     }
     
-    /* Títulos com estilo luxo */
     .title-luxo {
       font-family: 'Playfair Display', serif;
       font-weight: 700;
@@ -289,14 +245,6 @@
       background-clip: text;
     }
     
-    .title-luxo-sm {
-      font-family: 'Playfair Display', serif;
-      font-weight: 600;
-      color: #d4af37;
-      letter-spacing: 1px;
-    }
-    
-    /* Status indicator */
     .status-dot {
       display: inline-block;
       width: 6px;
@@ -310,12 +258,6 @@
       box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
     }
     
-    .status-dot.green {
-      background: #4ade80;
-      box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
-    }
-    
-    /* Animações */
     @keyframes pulseGold {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
@@ -325,23 +267,12 @@
       animation: pulseGold 2s ease-in-out infinite;
     }
     
-    /* Número de vaga estilo luxo */
-    .vaga-number {
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: rgba(255, 255, 255, 0.15);
-    }
-    
-    /* Header premium */
     .header-premium {
       border-bottom: 1px solid rgba(212, 175, 55, 0.1);
       background: rgba(10, 10, 15, 0.8);
       backdrop-filter: blur(20px);
     }
     
-    /* KPI Cards */
     .kpi-card {
       background: rgba(20, 20, 30, 0.5);
       backdrop-filter: blur(10px);
@@ -355,13 +286,22 @@
       border-color: rgba(212, 175, 55, 0.2);
       transform: translateY(-2px);
     }
+    
+    .vaga-number {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .text-gold-dim {
+      color: rgba(212, 175, 55, 0.6);
+    }
   </style>
 </head>
 <body>
 
-  <!-- ============================================
-       HEADER PREMIUM
-  ============================================ -->
   <header class="header-premium sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
       <div class="flex items-center space-x-4">
@@ -390,9 +330,6 @@
 
   <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
 
-    <!-- ============================================
-         KPIS
-    ============================================ -->
     <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <div class="kpi-card">
         <p class="text-[10px] font-semibold text-white/20 uppercase tracking-widest">Capacidade</p>
@@ -416,9 +353,6 @@
       </div>
     </section>
 
-    <!-- ============================================
-         MAPA DE VAGAS
-    ============================================ -->
     <section class="glass-premium rounded-2xl p-6 gold-glow">
       <div class="flex justify-between items-center mb-6">
         <h2 class="font-luxo text-lg font-bold text-gold flex items-center gap-3">
@@ -436,18 +370,11 @@
         </div>
       </div>
       <div id="grid-vagas" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-10 gap-3">
-        <!-- Renderizado dinamicamente pelo JS -->
       </div>
     </section>
 
-    <!-- ============================================
-         FORM + LISTA
-    ============================================ -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-      <!-- ==========================================
-           FORMULÁRIO DE ENTRADA
-      ========================================== -->
       <section class="glass-premium rounded-2xl p-6 gold-glow h-fit">
         <h2 class="font-luxo text-lg font-bold text-gold flex items-center gap-3 mb-6">
           <i class="fa-solid fa-key"></i>
@@ -459,7 +386,7 @@
             <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">PLACA</label>
             <div class="relative">
               <input type="text" id="placa" placeholder="ABC-1234" maxlength="8" required
-                class="input-luxo w-full font-mono uppercase">
+                class="input-luxo font-mono uppercase">
               <div id="placa-status" class="absolute right-4 top-3.5 hidden">
                 <i class="fa-solid fa-circle-check text-emerald-400"></i>
               </div>
@@ -470,26 +397,23 @@
           <div>
             <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">VEÍCULO</label>
             <input type="text" id="modelo" placeholder="Ex: Rolls-Royce Phantom" required
-              class="input-luxo w-full">
+              class="input-luxo">
           </div>
 
           <div>
             <label class="block text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-2">CATEGORIA</label>
-            <select id="categoria" class="input-luxo w-full">
+            <select id="categoria" class="input-luxo">
               <option value="1" class="bg-black">Passeio (R$ 10/h)</option>
               <option value="2" class="bg-black">Motocicleta (R$ 5/h)</option>
               <option value="3" class="bg-black">Utilitário (R$ 15/h)</option>
             </select>
           </div>
 
-          <button type="submit" id="btn-entrada" class="btn-luxo w-full flex items-center justify-center gap-3">
+          <button type="submit" id="btn-entrada" class="btn-luxo flex items-center justify-center gap-3">
             <i class="fa-solid fa-plus"></i> Registrar Entrada
           </button>
         </form>
 
-        <!-- ========================================
-             PLACAS AUTORIZADAS
-        ======================================== -->
         <div class="divider-gold"></div>
 
         <h3 class="font-luxo text-sm font-bold text-gold/80 flex items-center gap-3 mb-4">
@@ -506,23 +430,19 @@
           </button>
         </form>
 
-        <div id="lista-placas-autorizadas" class="max-h-48 overflow-y-auto space-y-2">
-          <!-- Renderizado via JS -->
+        <div id="lista-placas-autorizadas" class="max-h-48 overflow-y-auto space-y-1">
         </div>
 
         <div class="flex gap-3 mt-3">
           <button onclick="limparTodasPlacas()" class="text-[10px] text-white/20 hover:text-rose-400 transition-colors">
             <i class="fa-solid fa-trash-can"></i> Limpar
           </button>
-          <button onclick="importarPlacasExemplo()" class="text-[10px] text-white/20 hover:text-gold transition-colors">
-            <i class="fa-solid fa-file-import"></i> Importar
+          <button onclick="importarCarrosLuxo()" class="text-[10px] text-white/20 hover:text-gold transition-colors">
+            <i class="fa-solid fa-crown"></i> Importar Luxo
           </button>
         </div>
       </section>
 
-      <!-- ==========================================
-           LISTA DE VEÍCULOS
-      ========================================== -->
       <section class="lg:col-span-2 glass-premium rounded-2xl p-6 gold-glow">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h2 class="font-luxo text-lg font-bold text-gold flex items-center gap-3">
@@ -533,7 +453,7 @@
           <div class="relative w-full sm:w-64">
             <i class="fa-solid fa-magnifying-glass absolute left-4 top-2.5 text-white/10 text-xs"></i>
             <input type="text" id="busca" oninput="renderizarTabela()" placeholder="Buscar..."
-              class="input-luxo w-full pl-9 pr-4 py-2 text-sm">
+              class="input-luxo pl-9 pr-4 py-2 text-sm">
           </div>
         </div>
 
@@ -549,7 +469,6 @@
               </tr>
             </thead>
             <tbody id="tabela-veiculos">
-              <!-- Renderizado via JS -->
             </tbody>
           </table>
           <div id="empty-state" class="text-center py-12 text-white/10 text-xs font-light tracking-widest">
@@ -560,9 +479,6 @@
     </div>
   </main>
 
-  <!-- ============================================
-       MODAL CHECKOUT
-  ============================================ -->
   <div id="modal-checkout" class="fixed inset-0 bg-black/90 backdrop-blur-lg hidden flex items-center justify-center p-4 z-50">
     <div class="glass-premium rounded-2xl max-w-sm w-full p-8 gold-glow" style="background: rgba(10, 10, 15, 0.95);">
       <div class="flex justify-between items-center border-b border-gold/10 pb-4 mb-4">
@@ -596,17 +512,14 @@
         <p id="modal-valor" class="font-luxo text-4xl font-bold text-gold">R$ 0,00</p>
       </div>
 
-      <button onclick="confirmarSaida()" class="btn-luxo w-full flex items-center justify-center gap-3 mt-2">
+      <button onclick="confirmarSaida()" class="btn-luxo flex items-center justify-center gap-3 mt-2">
         <i class="fa-solid fa-check"></i> Registrar Pagamento
       </button>
     </div>
   </div>
 
-  <!-- ============================================
-       TOAST PREMIUM
-  ============================================ -->
   <div id="toast" class="toast-premium hidden">
-    <div class="glass-premium rounded-2xl px-6 py-4 border-gold-light">
+    <div class="glass-premium rounded-2xl px-6 py-4" style="border-color: rgba(212, 175, 55, 0.15);">
       <div class="flex items-center gap-4">
         <div id="toast-icon" class="text-2xl"></div>
         <div>
@@ -618,15 +531,9 @@
   </div>
 
   <script>
-    // ============================================
-    // CONFIGURAÇÕES
-    // ============================================
     const TOTAL_VAGAS = 20;
     const TARIFAS = { "1": 10.00, "2": 5.00, "3": 15.00 };
 
-    // ============================================
-    // CARROS DE LUXO COM PLACAS
-    // ============================================
     const CARROS_LUXO = [
       { placa: 'ABC-1234', modelo: 'Rolls-Royce Phantom' },
       { placa: 'DEF-5678', modelo: 'Bentley Continental GT' },
@@ -640,17 +547,11 @@
       { placa: 'BCD-8901', modelo: 'BMW 7 Series' },
     ];
 
-    // ============================================
-    // ESTADO
-    // ============================================
     let patios = JSON.parse(localStorage.getItem('flashpark_patio')) || [];
     let faturamento = parseFloat(localStorage.getItem('flashpark_caixa')) || 0;
     let placasAutorizadas = JSON.parse(localStorage.getItem('flashpark_placas')) || [];
     let vCheckoutIdx = null;
 
-    // ============================================
-    // ELEMENTOS DOM
-    // ============================================
     const formEntrada = document.getElementById('form-entrada');
     const formCadastro = document.getElementById('form-cadastro-placa');
     const inputPlaca = document.getElementById('placa');
@@ -658,9 +559,6 @@
     const inputModelo = document.getElementById('modelo');
     const btnEntrada = document.getElementById('btn-entrada');
 
-    // ============================================
-    // FUNÇÕES DE VALIDAÇÃO
-    // ============================================
     function validarFormatoPlaca(placa) {
       const padraoAntigo = /^[A-Z]{3}-?[0-9]{4}$/;
       const padraoMercosul = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
@@ -676,16 +574,13 @@
       return patios.some(v => v.placa === placa.toUpperCase().trim());
     }
 
-    // ============================================
-    // VALIDAÇÃO EM TEMPO REAL
-    // ============================================
     function validarPlacaEmTempoReal() {
       const placa = inputPlaca.value.toUpperCase().trim();
       const statusDiv = document.getElementById('placa-status');
       const mensagemDiv = document.getElementById('placa-mensagem');
 
       if (placa.length === 0) {
-        inputPlaca.className = 'input-luxo w-full font-mono uppercase';
+        inputPlaca.className = 'input-luxo font-mono uppercase';
         statusDiv.classList.add('hidden');
         mensagemDiv.classList.add('hidden');
         btnEntrada.disabled = false;
@@ -693,7 +588,7 @@
       }
 
       if (!validarFormatoPlaca(placa)) {
-        inputPlaca.className = 'input-luxo w-full font-mono uppercase border-rose-500/30';
+        inputPlaca.className = 'input-luxo font-mono uppercase border-rose-500/30';
         statusDiv.classList.add('hidden');
         mensagemDiv.classList.remove('hidden');
         mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
@@ -703,7 +598,7 @@
       }
 
       if (placaIsOcupada(placa)) {
-        inputPlaca.className = 'input-luxo w-full font-mono uppercase border-rose-500/30';
+        inputPlaca.className = 'input-luxo font-mono uppercase border-rose-500/30';
         statusDiv.classList.add('hidden');
         mensagemDiv.classList.remove('hidden');
         mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
@@ -712,7 +607,7 @@
         return;
       }
 
-      inputPlaca.className = 'input-luxo w-full font-mono uppercase border-emerald-500/30';
+      inputPlaca.className = 'input-luxo font-mono uppercase border-emerald-500/30';
       statusDiv.classList.remove('hidden');
       mensagemDiv.classList.remove('hidden');
 
@@ -727,9 +622,16 @@
       }
     }
 
-    // ============================================
-    // PLACAS AUTORIZADAS
-    // ============================================
+    inputPlaca.addEventListener('input', validarPlacaEmTempoReal);
+
+    inputPlaca.addEventListener('keyup', function(e) {
+      let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (valor.length > 3 && valor.length <= 7) {
+        valor = valor.substring(0, 3) + '-' + valor.substring(3);
+      }
+      this.value = valor;
+    });
+
     function adicionarPlaca(placa) {
       const placaLimpa = placa.toUpperCase().trim();
       if (!placaLimpa) { mostrarToast('error', 'Erro', 'Digite uma placa.'); return false; }
@@ -761,4 +663,92 @@
         return;
       }
       if (placasAutorizadas.length === 0) { mostrarToast('warning', 'Aviso', 'Nenhuma placa.'); return; }
-      if (confirm(`Remover ${plac
+      if (confirm(`Remover ${placasAutorizadas.length} placas?`)) {
+        placasAutorizadas = [];
+        salvarEstado();
+        renderizarPlacasAutorizadas();
+        mostrarToast('success', 'Sucesso', 'Todas removidas.');
+      }
+    }
+
+    function importarCarrosLuxo() {
+      let adicionadas = 0;
+      CARROS_LUXO.forEach(({ placa, modelo }) => {
+        if (!placasAutorizadas.includes(placa)) {
+          placasAutorizadas.push(placa);
+          adicionadas++;
+        }
+      });
+      salvarEstado();
+      renderizarPlacasAutorizadas();
+      mostrarToast('success', 'Sucesso', `${adicionadas} carros de luxo importados!`);
+    }
+
+    function renderizarPlacasAutorizadas() {
+      const container = document.getElementById('lista-placas-autorizadas');
+      const total = document.getElementById('total-placas');
+      
+      total.textContent = placasAutorizadas.length;
+      
+      if (placasAutorizadas.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4 text-white/20 text-xs">
+            <i class="fa-solid fa-inbox text-2xl block mb-1 opacity-30"></i>
+            Nenhuma placa autorizada
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = placasAutorizadas.map(p => {
+        const ocupado = patios.some(v => v.placa === p);
+        return `
+          <div class="badge-placa w-full justify-between">
+            <span>
+              ${p}
+              ${ocupado ? '<span class="ocupado"><i class="fa-solid fa-circle"></i> ocupado</span>' : ''}
+            </span>
+            <button onclick="removerPlaca('${p}')" class="remove-btn">
+              <i class="fa-solid fa-times"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function mostrarToast(tipo, titulo, mensagem) {
+      const toast = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      const titleEl = document.getElementById('toast-title');
+      const msgEl = document.getElementById('toast-message');
+      
+      const icones = {
+        success: '<i class="fa-solid fa-check-circle text-emerald-400"></i>',
+        error: '<i class="fa-solid fa-circle-xmark text-rose-400"></i>',
+        warning: '<i class="fa-solid fa-triangle-exclamation text-amber-400"></i>',
+        info: '<i class="fa-solid fa-circle-info text-indigo-400"></i>'
+      };
+      
+      icon.innerHTML = icones[tipo] || icones.info;
+      titleEl.textContent = titulo;
+      msgEl.textContent = mensagem;
+      
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+
+    formEntrada.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const placa = inputPlaca.value.toUpperCase().trim();
+      const modelo = inputModelo.value.trim();
+      
+      if (!placa) { mostrarToast('error', 'Erro', 'Digite a placa.'); return; }
+      if (!validarFormatoPlaca(placa)) { mostrarToast('error', 'Erro', 'Formato inválido.'); return; }
+      if (placaIsOcupada(placa)) { mostrarToast('error', 'Erro', 'Já estacionado.'); return; }
+      if (patios.length >= TOTAL_VAGAS) { mostrarToast('error', 'Erro', 'Pátio lotado!'); return; }
+      
+      if (!placaIsAutorizada(placa)) {
+        if (!confirm
