@@ -4,515 +4,1370 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FlashPark - Sistema de Estacionamento</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0b0b0f;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: rgba(20, 20, 28, 0.9);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-radius: 16px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo i {
+      color: #d4af37;
+      font-size: 28px;
+    }
+
+    .logo h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #d4af37, #f5d97e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo span {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-luxo {
+      background: linear-gradient(135deg, #d4af37, #b8962f);
+      color: #0b0b0f;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-luxo:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-luxo-outline {
+      background: transparent;
+      color: #d4af37;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-luxo-outline:hover {
+      background: rgba(212, 175, 55, 0.1);
+      border-color: #d4af37;
+    }
+
+    .btn-danger {
+      border-color: rgba(244, 67, 54, 0.3);
+      color: #ef5350;
+    }
+
+    .btn-danger:hover {
+      background: rgba(244, 67, 54, 0.1);
+      border-color: #ef5350;
+    }
+
+    /* Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: rgba(20, 20, 28, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 20px 24px;
+      backdrop-filter: blur(8px);
+    }
+
+    .card-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.3);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+
+    .card-title i {
+      color: #d4af37;
+    }
+
+    /* KPI */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-item {
+      background: rgba(20, 20, 28, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-align: center;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #d4af37;
+      line-height: 1.2;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.3);
+      margin-top: 4px;
+    }
+
+    /* Vagas */
+    .vaga-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .vaga-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 12px 8px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: default;
+      min-height: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .vaga-card.vaga-ocupada {
+      background: rgba(212, 175, 55, 0.08);
+      border-color: rgba(212, 175, 55, 0.2);
+      cursor: pointer;
+    }
+
+    .vaga-card.vaga-ocupada:hover {
+      background: rgba(212, 175, 55, 0.15);
+      transform: scale(1.02);
+    }
+
+    .vaga-card.vaga-livre {
+      border-color: rgba(255, 255, 255, 0.04);
+    }
+
+    .vaga-number {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.15);
+    }
+
+    .status-text {
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.1);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .placa-text {
+      color: #d4af37;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    /* Formulários */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.3);
+      margin-bottom: 6px;
+    }
+
+    .input-luxo {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .input-luxo:focus {
+      border-color: rgba(212, 175, 55, 0.4);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .input-luxo.error {
+      border-color: rgba(244, 67, 54, 0.4);
+    }
+
+    .input-luxo.success {
+      border-color: rgba(76, 175, 80, 0.4);
+    }
+
+    .input-luxo::placeholder {
+      color: rgba(255, 255, 255, 0.15);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .form-row .btn-luxo {
+      height: 42px;
+      flex-shrink: 0;
+    }
+
+    select.input-luxo {
+      appearance: none;
+      cursor: pointer;
+    }
+
+    /* Tabela */
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 10px 12px;
+      color: rgba(255, 255, 255, 0.2);
+      font-weight: 500;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .text-gold {
+      color: #d4af37;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(255, 255, 255, 0.1);
+    }
+
+    .empty-state i {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 12px;
+      opacity: 0.3;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Badges */
+    .badge-placa {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      padding: 4px 12px 4px 16px;
+      font-size: 12px;
+      font-family: monospace;
+      color: #d4af37;
+      transition: all 0.2s ease;
+    }
+
+    .badge-placa .ocupado {
+      font-size: 8px;
+      color: rgba(244, 67, 54, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-placa .ocupado i {
+      font-size: 6px;
+      color: #ef5350;
+    }
+
+    .badge-placa .remove-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      font-size: 10px;
+    }
+
+    .badge-placa .remove-btn:hover {
+      color: #ef5350;
+      background: rgba(244, 67, 54, 0.1);
+    }
+
+    .badge-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      max-height: 120px;
+      overflow-y: auto;
+      padding: 4px 2px;
+    }
+
+    .badge-container::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .badge-container::-webkit-scrollbar-thumb {
+      background: rgba(212, 175, 55, 0.2);
+      border-radius: 10px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #1a1a24;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-radius: 20px;
+      padding: 32px 40px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal-content h2 {
+      color: #d4af37;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .modal-content .sub {
+      color: rgba(255, 255, 255, 0.2);
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .modal-divider {
+      width: 40px;
+      height: 2px;
+      background: rgba(212, 175, 55, 0.2);
+      margin: 12px auto;
+    }
+
+    .modal-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .modal-row .value {
+      color: #e0e0e0;
+      font-weight: 600;
+    }
+
+    .modal-row .value.highlight {
+      color: #d4af37;
+      font-size: 22px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      justify-content: center;
+    }
+
+    .modal-actions button {
+      padding: 10px 28px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .modal-actions .btn-confirm {
+      background: linear-gradient(135deg, #d4af37, #b8962f);
+      color: #0b0b0f;
+    }
+
+    .modal-actions .btn-confirm:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+    }
+
+    .modal-actions .btn-cancel {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .modal-actions .btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1a1a24;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-radius: 12px;
+      padding: 16px 20px;
+      min-width: 280px;
+      max-width: 380px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      transition: all 0.4s ease;
+      transform: translateY(0);
+      opacity: 1;
+      z-index: 2000;
+    }
+
+    .toast.toast-hidden {
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .toast-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .toast-body h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e0e0e0;
+    }
+
+    .toast-body p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 2px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      .vaga-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .form-row {
+        flex-direction: column;
+      }
+      .form-row .form-group {
+        width: 100%;
+      }
+      .modal-content {
+        padding: 24px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Estrutura do formulário e elementos do sistema -->
+<div class="container">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">
+      <i class="fa-solid fa-square-parking"></i>
+      <div>
+        <h1>FlashPark</h1>
+        <span>LUXURY PARKING</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-luxo-outline" onclick="importarCarrosLuxo()" type="button">
+        <i class="fa-solid fa-star"></i> Importar Luxo
+      </button>
+      <button class="btn-luxo-outline btn-danger" onclick="limparTodasPlacas()" type="button">
+        <i class="fa-solid fa-trash"></i> Limpar
+      </button>
+    </div>
+  </header>
 
-  <script>
-    // ============================================
-    // CONFIGURAÇÕES
-    // ============================================
-    const TOTAL_VAGAS = 20;
-    
-    // Tarifas convertidas para valor por MINUTO (R$/minuto)
-    // Categoria 1 (Passeio): R$ 10,00/h -> R$ 0,1667/min
-    // Categoria 2 (Moto): R$ 5,00/h -> R$ 0,0833/min
-    // Categoria 3 (Utilitário): R$ 15,00/h -> R$ 0,2500/min
-    const TARIFAS_POR_MINUTO = { 
-      "1": 10.00 / 60, 
-      "2": 5.00 / 60, 
-      "3": 15.00 / 60 
-    };
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi-item">
+      <div class="kpi-value" id="kpi-total">20</div>
+      <div class="kpi-label">Total Vagas</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-value" id="kpi-ocupadas">0</div>
+      <div class="kpi-label">Ocupadas</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-value" id="kpi-livres">20</div>
+      <div class="kpi-label">Livres</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-value" id="kpi-faturamento">R$ 0,00</div>
+      <div class="kpi-label">Faturamento</div>
+    </div>
+  </div>
 
-    const CARROS_LUXO = [
-      { placa: 'ABC-1234', modelo: 'Rolls-Royce Phantom' },
-      { placa: 'DEF-5678', modelo: 'Bentley Continental GT' },
-      { placa: 'GHI-9012', modelo: 'Ferrari SF90 Stradale' },
-      { placa: 'JKL-3456', modelo: 'Lamborghini Aventador' },
-      { placa: 'MNO-7890', modelo: 'Porsche 911 Turbo S' },
-      { placa: 'PQR-2345', modelo: 'Aston Martin DBS' },
-      { placa: 'STU-6789', modelo: 'McLaren 720S' },
-      { placa: 'VWX-0123', modelo: 'Bugatti Chiron' },
-      { placa: 'YZA-4567', modelo: 'Mercedes-Maybach S-Class' },
-      { placa: 'BCD-8901', modelo: 'BMW 7 Series' },
-    ];
+  <!-- GRID PRINCIPAL -->
+  <div class="grid-2">
+    <!-- ESQUERDA: MAPA + FORM -->
+    <div>
+      <!-- Mapa -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title">
+          <i class="fa-solid fa-grid-2"></i> Mapa das Vagas
+          <span style="margin-left:auto;font-size:10px;color:rgba(255,255,255,0.15);">
+            <span id="total-veiculos">0</span> veículos
+          </span>
+        </div>
+        <div class="vaga-grid" id="grid-vagas"></div>
+      </div>
 
-    // ============================================
-    // ESTADO
-    // ============================================
-    let patios = JSON.parse(localStorage.getItem('flashpark_patio')) || [];
-    let faturamento = parseFloat(localStorage.getItem('flashpark_caixa')) || 0;
-    let placasAutorizadas = JSON.parse(localStorage.getItem('flashpark_placas')) || [];
-    let vCheckoutIdx = null;
-
-    // ============================================
-    // ELEMENTOS DOM
-    // ============================================
-    const formEntrada = document.getElementById('form-entrada');
-    const formCadastro = document.getElementById('form-cadastro-placa');
-    const inputPlaca = document.getElementById('placa');
-    const inputNovaPlaca = document.getElementById('nova-placa');
-    const inputModelo = document.getElementById('modelo');
-    const btnEntrada = document.getElementById('btn-entrada');
-
-    // ============================================
-    // FUNÇÕES DE VALIDAÇÃO
-    // ============================================
-    function validarFormatoPlaca(placa) {
-      const placaLimpa = placa.replace(/[^A-Z0-9]/g, '');
-      const padraoAntigo = /^[A-Z]{3}[0-9]{4}$/;
-      const padraoMercosul = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
-      return padraoAntigo.test(placaLimpa) || padraoMercosul.test(placaLimpa);
-    }
-
-    function placaIsAutorizada(placa) {
-      return placasAutorizadas.includes(placa.toUpperCase().trim());
-    }
-
-    function placaIsOcupada(placa) {
-      return patios.some(v => v.placa === placa.toUpperCase().trim());
-    }
-
-    // ============================================
-    // VALIDAÇÃO EM TEMPO REAL
-    // ============================================
-    function validarPlacaEmTempoReal() {
-      if (!inputPlaca) return;
-
-      const placa = inputPlaca.value.toUpperCase().trim();
-      const statusDiv = document.getElementById('placa-status');
-      const mensagemDiv = document.getElementById('placa-mensagem');
-
-      if (placa.length === 0) {
-        inputPlaca.className = 'input-luxo font-mono uppercase';
-        if (statusDiv) statusDiv.classList.add('hidden');
-        if (mensagemDiv) mensagemDiv.classList.add('hidden');
-        if (btnEntrada) btnEntrada.disabled = false;
-        return;
-      }
-
-      if (!validarFormatoPlaca(placa)) {
-        inputPlaca.className = 'input-luxo font-mono uppercase error';
-        if (statusDiv) statusDiv.classList.add('hidden');
-        if (mensagemDiv) {
-          mensagemDiv.classList.remove('hidden');
-          mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
-          mensagemDiv.textContent = '⚠️ Formato inválido';
-        }
-        if (btnEntrada) btnEntrada.disabled = true;
-        return;
-      }
-
-      if (placaIsOcupada(placa)) {
-        const veiculoAtual = patios.find(v => v.placa === placa);
-        inputPlaca.className = 'input-luxo font-mono uppercase error';
-        if (statusDiv) statusDiv.classList.add('hidden');
-        if (mensagemDiv) {
-          mensagemDiv.classList.remove('hidden');
-          mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
-          mensagemDiv.textContent = `⚠️ Placa já no pátio (${veiculoAtual ? veiculoAtual.modelo : 'Veículo'})`;
-        }
-        if (btnEntrada) btnEntrada.disabled = true;
-        return;
-      }
-
-      inputPlaca.className = 'input-luxo font-mono uppercase success';
-      if (statusDiv) statusDiv.classList.remove('hidden');
-      if (mensagemDiv) {
-        mensagemDiv.classList.remove('hidden');
-        if (placaIsAutorizada(placa)) {
-          mensagemDiv.className = 'text-[10px] mt-1 text-emerald-400';
-          mensagemDiv.textContent = '✅ Autorizada';
-        } else {
-          mensagemDiv.className = 'text-[10px] mt-1 text-amber-400';
-          mensagemDiv.textContent = '⚠️ Não autorizada';
-        }
-      }
-      if (btnEntrada) btnEntrada.disabled = false;
-    }
-
-    // Máscara e escutadores de input
-    if (inputPlaca) {
-      inputPlaca.addEventListener('input', function() {
-        let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        if (valor.length > 3 && valor.length <= 7) {
-          valor = valor.substring(0, 3) + '-' + valor.substring(3);
-        }
-        this.value = valor;
-        validarPlacaEmTempoReal();
-      });
-    }
-
-    if (inputNovaPlaca) {
-      inputNovaPlaca.addEventListener('input', function() {
-        let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        if (valor.length > 3 && valor.length <= 7) {
-          valor = valor.substring(0, 3) + '-' + valor.substring(3);
-        }
-        this.value = valor;
-      });
-    }
-
-    // ============================================
-    // PLACAS AUTORIZADAS
-    // ============================================
-    function adicionarPlaca(placa) {
-      const placaLimpa = placa.toUpperCase().trim();
-      if (!placaLimpa) { mostrarToast('error', 'Erro', 'Digite uma placa.'); return false; }
-      if (!validarFormatoPlaca(placaLimpa)) { mostrarToast('error', 'Erro', 'Formato inválido.'); return false; }
-      if (placasAutorizadas.includes(placaLimpa)) { mostrarToast('warning', 'Aviso', 'Já cadastrada.'); return false; }
-      
-      placasAutorizadas.push(placaLimpa);
-      salvarEstado();
-      renderizarPlacasAutorizadas();
-      mostrarToast('success', 'Sucesso', `Placa ${placaLimpa} autorizada.`);
-      return true;
-    }
-
-    function removerPlaca(placa) {
-      if (placaIsOcupada(placa)) {
-        mostrarToast('error', 'Erro', 'Veículo está no pátio!');
-        return;
-      }
-      placasAutorizadas = placasAutorizadas.filter(p => p !== placa);
-      salvarEstado();
-      renderizarPlacasAutorizadas();
-      mostrarToast('info', 'Info', `Placa ${placa} removida.`);
-    }
-
-    function limparTodasPlacas() {
-      const emUso = placasAutorizadas.filter(p => patios.some(v => v.placa === p));
-      if (emUso.length > 0) {
-        mostrarToast('error', 'Erro', `Placas em uso: ${emUso.join(', ')}`);
-        return;
-      }
-      if (placasAutorizadas.length === 0) { mostrarToast('warning', 'Aviso', 'Nenhuma placa.'); return; }
-      if (confirm(`Remover ${placasAutorizadas.length} placas?`)) {
-        placasAutorizadas = [];
-        salvarEstado();
-        renderizarPlacasAutorizadas();
-        mostrarToast('success', 'Sucesso', 'Todas removidas.');
-      }
-    }
-
-    function importarCarrosLuxo() {
-      let adicionadas = 0;
-      CARROS_LUXO.forEach(({ placa }) => {
-        if (!placasAutorizadas.includes(placa)) {
-          placasAutorizadas.push(placa);
-          adicionadas++;
-        }
-      });
-      salvarEstado();
-      renderizarPlacasAutorizadas();
-      mostrarToast('success', 'Sucesso', `${adicionadas} carros de luxo importados!`);
-    }
-
-    function renderizarPlacasAutorizadas() {
-      const container = document.getElementById('lista-placas-autorizadas');
-      const total = document.getElementById('total-placas');
-      
-      if (total) total.textContent = placasAutorizadas.length;
-      if (!container) return;
-      
-      if (placasAutorizadas.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-4 text-white/20 text-xs">
-            <i class="fa-solid fa-inbox text-2xl block mb-1 opacity-30"></i>
-            Nenhuma placa autorizada
+      <!-- Form Entrada -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-car"></i> Registrar Entrada
+        </div>
+        <form id="form-entrada">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Placa</label>
+              <input type="text" id="placa" class="input-luxo font-mono uppercase" placeholder="ABC-1234" maxlength="8" autocomplete="off">
+              <div id="placa-status" class="hidden" style="font-size:9px;color:rgba(255,255,255,0.15);margin-top:4px;">
+                <i class="fa-solid fa-circle-check"></i> Válido
+              </div>
+              <div id="placa-mensagem" class="hidden" style="font-size:10px;margin-top:4px;"></div>
+            </div>
+            <div class="form-group">
+              <label>Modelo</label>
+              <input type="text" id="modelo" class="input-luxo" placeholder="Ex: Onix" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label>Categoria</label>
+              <select id="categoria" class="input-luxo">
+                <option value="1">Passeio (R$10/h)</option>
+                <option value="2">Moto (R$5/h)</option>
+                <option value="3">Utilitário (R$15/h)</option>
+              </select>
+            </div>
           </div>
-        `;
-        return;
-      }
-      
-      container.innerHTML = placasAutorizadas.map(p => {
-        const ocupado = patios.some(v => v.placa === p);
-        return `
-          <div class="badge-placa">
-            <span>
-              ${p}
-              ${ocupado ? '<span class="ocupado"><i class="fa-solid fa-circle"></i> ocupado</span>' : ''}
-            </span>
-            <button onclick="removerPlaca('${p}')" class="remove-btn" type="button">
-              <i class="fa-solid fa-times"></i>
+          <div style="display:flex;gap:10px;margin-top:12px;">
+            <button type="submit" id="btn-entrada" class="btn-luxo" style="flex:1;justify-content:center;">
+              <i class="fa-solid fa-right-to-bracket"></i> Entrada
             </button>
           </div>
-        `;
-      }).join('');
+        </form>
+      </div>
+    </div>
+
+    <!-- DIREITA: AUTORIZADAS + LISTA -->
+    <div>
+      <!-- Placas Autorizadas -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title">
+          <i class="fa-solid fa-shield-check"></i> Placas Autorizadas
+          <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.2);">
+            <span id="total-placas">0</span>
+          </span>
+        </div>
+        <form id="form-cadastro-placa" style="margin-bottom:12px;">
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <input type="text" id="nova-placa" class="input-luxo font-mono uppercase" placeholder="ABC-1234" maxlength="8">
+            </div>
+            <button type="submit" class="btn-luxo" style="height:42px;flex-shrink:0;">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </form>
+        <div id="lista-placas-autorizadas" class="badge-container"></div>
+      </div>
+
+      <!-- Tabela de Veículos -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-list"></i> Veículos no Pátio
+          <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.15);">
+            <i class="fa-solid fa-magnifying-glass" style="margin-right:4px;"></i>
+            <input type="text" id="busca" placeholder="Buscar..." style="background:transparent;border:none;color:#e0e0e0;font-size:11px;width:100px;outline:none;border-bottom:1px solid rgba(255,255,255,0.05);">
+          </span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Vaga</th>
+                <th>Placa</th>
+                <th>Modelo</th>
+                <th>Entrada</th>
+                <th class="text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-veiculos"></tbody>
+          </table>
+        </div>
+        <div id="empty-state" class="empty-state hidden">
+          <i class="fa-solid fa-car-side"></i>
+          <p>Nenhum veículo no pátio</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CHECKOUT -->
+<div id="modal-checkout" class="modal-overlay hidden">
+  <div class="modal-content">
+    <h2><i class="fa-solid fa-receipt" style="margin-right:8px;"></i>Checkout</h2>
+    <p class="sub">Confirme a saída do veículo</p>
+    <div class="modal-divider"></div>
+    <div class="modal-row">
+      <span>Placa</span>
+      <span class="value font-mono" id="modal-placa">---</span>
+    </div>
+    <div class="modal-row">
+      <span>Tempo estacionado</span>
+      <span class="value" id="modal-tempo">---</span>
+    </div>
+    <div class="modal-row">
+      <span>Tolerância</span>
+      <span class="value" id="modal-tolerancia" style="font-size:12px;">---</span>
+    </div>
+    <div class="modal-divider"></div>
+    <div class="modal-row" style="padding-top:4px;">
+      <span style="font-size:16px;color:rgba(255,255,255,0.4);">Total a pagar</span>
+      <span class="value highlight" id="modal-valor">R$ 0,00</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-confirm" onclick="confirmarSaida()">
+        <i class="fa-solid fa-check"></i> Confirmar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast toast-hidden">
+  <div class="toast-icon" id="toast-icon"></div>
+  <div class="toast-body">
+    <h4 id="toast-title">Título</h4>
+    <p id="toast-message">Mensagem</p>
+  </div>
+</div>
+
+<script>
+  // ============================================
+  // CONFIGURAÇÕES
+  // ============================================
+  const TOTAL_VAGAS = 20;
+
+  const TARIFAS_POR_MINUTO = {
+    "1": 10.00 / 60,
+    "2": 5.00 / 60,
+    "3": 15.00 / 60
+  };
+
+  // Carros de luxo com validação de nomes
+  const CARROS_LUXO = [
+    { placa: 'ABC-1234', modelo: 'Rolls-Royce Phantom' },
+    { placa: 'DEF-5678', modelo: 'Bentley Continental GT' },
+    { placa: 'GHI-9012', modelo: 'Ferrari SF90 Stradale' },
+    { placa: 'JKL-3456', modelo: 'Lamborghini Aventador' },
+    { placa: 'MNO-7890', modelo: 'Porsche 911 Turbo S' },
+    { placa: 'PQR-2345', modelo: 'Aston Martin DBS' },
+    { placa: 'STU-6789', modelo: 'McLaren 720S' },
+    { placa: 'VWX-0123', modelo: 'Bugatti Chiron' },
+    { placa: 'YZA-4567', modelo: 'Mercedes-Maybach S-Class' },
+    { placa: 'BCD-8901', modelo: 'BMW 7 Series' },
+  ];
+
+  // ============================================
+  // ESTADO
+  // ============================================
+  let patios = JSON.parse(localStorage.getItem('flashpark_patio')) || [];
+  let faturamento = parseFloat(localStorage.getItem('flashpark_caixa')) || 0;
+  let placasAutorizadas = JSON.parse(localStorage.getItem('flashpark_placas')) || [];
+  let vCheckoutIdx = null;
+
+  // ============================================
+  // ELEMENTOS DOM
+  // ============================================
+  const formEntrada = document.getElementById('form-entrada');
+  const formCadastro = document.getElementById('form-cadastro-placa');
+  const inputPlaca = document.getElementById('placa');
+  const inputNovaPlaca = document.getElementById('nova-placa');
+  const inputModelo = document.getElementById('modelo');
+  const btnEntrada = document.getElementById('btn-entrada');
+
+  // ============================================
+  // FUNÇÕES DE VALIDAÇÃO
+  // ============================================
+  function validarFormatoPlaca(placa) {
+    const placaLimpa = placa.replace(/[^A-Z0-9]/g, '');
+    const padraoAntigo = /^[A-Z]{3}[0-9]{4}$/;
+    const padraoMercosul = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
+    return padraoAntigo.test(placaLimpa) || padraoMercosul.test(placaLimpa);
+  }
+
+  function placaIsAutorizada(placa) {
+    return placasAutorizadas.includes(placa.toUpperCase().trim());
+  }
+
+  function placaIsOcupada(placa) {
+    return patios.some(v => v.placa === placa.toUpperCase().trim());
+  }
+
+  // ============================================
+  // VALIDAÇÃO EM TEMPO REAL
+  // ============================================
+  function validarPlacaEmTempoReal() {
+    if (!inputPlaca) return;
+
+    const placa = inputPlaca.value.toUpperCase().trim();
+    const statusDiv = document.getElementById('placa-status');
+    const mensagemDiv = document.getElementById('placa-mensagem');
+
+    if (placa.length === 0) {
+      inputPlaca.className = 'input-luxo font-mono uppercase';
+      if (statusDiv) statusDiv.classList.add('hidden');
+      if (mensagemDiv) mensagemDiv.classList.add('hidden');
+      if (btnEntrada) btnEntrada.disabled = false;
+      return;
     }
 
-    // ============================================
-    // TOAST
-    // ============================================
-    function mostrarToast(tipo, titulo, mensagem) {
-      const toast = document.getElementById('toast');
-      const icon = document.getElementById('toast-icon');
-      const titleEl = document.getElementById('toast-title');
-      const msgEl = document.getElementById('toast-message');
-      
-      if (!toast) return;
-
-      const icones = {
-        success: '<i class="fa-solid fa-check-circle text-emerald-400"></i>',
-        error: '<i class="fa-solid fa-circle-xmark text-rose-400"></i>',
-        warning: '<i class="fa-solid fa-triangle-exclamation text-amber-400"></i>',
-        info: '<i class="fa-solid fa-circle-info text-indigo-400"></i>'
-      };
-      
-      if (icon) icon.innerHTML = icones[tipo] || icones.info;
-      if (titleEl) titleEl.textContent = titulo;
-      if (msgEl) msgEl.textContent = mensagem;
-      
-      toast.classList.remove('toast-hidden');
-      clearTimeout(toast._timeout);
-      toast._timeout = setTimeout(() => {
-        toast.classList.add('toast-hidden');
-      }, 4000);
-    }
-
-    // ============================================
-    // ENTRADA DE VEÍCULO
-    // ============================================
-    if (formEntrada) {
-      formEntrada.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const placa = inputPlaca ? inputPlaca.value.toUpperCase().trim() : '';
-        const modelo = inputModelo ? inputModelo.value.trim() : 'Não informado';
-        const categoriaSelect = document.getElementById('categoria');
-        const categoriaVal = categoriaSelect ? categoriaSelect.value : '1';
-        
-        if (!placa) { mostrarToast('error', 'Erro', 'Digite a placa.'); return; }
-        if (!validarFormatoPlaca(placa)) { mostrarToast('error', 'Erro', 'Formato inválido.'); return; }
-        
-        if (placaIsOcupada(placa)) { 
-          const veiculoExistente = patios.find(v => v.placa === placa);
-          mostrarToast('error', 'Erro', `A placa ${placa} já pertence ao veículo "${veiculoExistente.modelo}".`); 
-          return; 
-        }
-
-        if (patios.length >= TOTAL_VAGAS) { mostrarToast('error', 'Erro', 'Pátio lotado!'); return; }
-        
-        if (!placaIsAutorizada(placa)) {
-          if (!confirm(`Placa "${placa}" não está autorizada. Deseja adicioná-la?`)) {
-            return;
-          }
-          placasAutorizadas.push(placa);
-          salvarEstado();
-          renderizarPlacasAutorizadas();
-        }
-        
-        const vagasOcupadas = patios.map(v => v.vaga);
-        let vagaLivre = 1;
-        while (vagasOcupadas.includes(vagaLivre)) vagaLivre++;
-        
-        patios.push({
-          vaga: vagaLivre,
-          placa: placa,
-          modelo: modelo,
-          categoria: categoriaVal,
-          entrada: new Date().toISOString()
-        });
-        
-        salvarEstado();
-        formEntrada.reset();
-        
-        if (inputPlaca) inputPlaca.className = 'input-luxo font-mono uppercase';
-        
-        const statusDiv = document.getElementById('placa-status');
-        const mensagemDiv = document.getElementById('placa-mensagem');
-        if (statusDiv) statusDiv.classList.add('hidden');
-        if (mensagemDiv) mensagemDiv.classList.add('hidden');
-        if (btnEntrada) btnEntrada.disabled = false;
-        
-        atualizar();
-        renderizarPlacasAutorizadas();
-        mostrarToast('success', 'Entrada Registrada', `${placa} (${modelo}) - Vaga #${vagaLivre}`);
-      });
-    }
-
-    // ============================================
-    // CADASTRO DE NOVA PLACA
-    // ============================================
-    if (formCadastro) {
-      formCadastro.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (!inputNovaPlaca) return;
-        const placa = inputNovaPlaca.value.toUpperCase().trim();
-        if (adicionarPlaca(placa)) {
-          inputNovaPlaca.value = '';
-        }
-      });
-    }
-
-    // ============================================
-    // CHECKOUT E MODAL (CÁLCULO POR MINUTO)
-    // ============================================
-    function calcularCobranca(veiculo) {
-      const agora = new Date();
-      const entrada = new Date(veiculo.entrada);
-      const diffMs = agora - entrada;
-      const diffMinutos = Math.max(1, Math.ceil(diffMs / (1000 * 60)));
-      const tarifaMinuto = TARIFAS_POR_MINUTO[veiculo.categoria] || (10.00 / 60);
-      
-      const isIsento = diffMinutos <= 15;
-      const valorTotal = isIsento ? 0 : diffMinutos * tarifaMinuto;
-
-      return {
-        diffMinutos,
-        isIsento,
-        valorTotal
-      };
-    }
-
-    function abrirCheckout(idx) {
-      if (!patios[idx]) return;
-      vCheckoutIdx = idx;
-      const veiculo = patios[idx];
-      const { diffMinutos, isIsento, valorTotal } = calcularCobranca(veiculo);
-
-      const elPlaca = document.getElementById('modal-placa');
-      const elTempo = document.getElementById('modal-tempo');
-      const elTolerancia = document.getElementById('modal-tolerancia');
-      const elValor = document.getElementById('modal-valor');
-      const modalCheckout = document.getElementById('modal-checkout');
-
-      if (elPlaca) elPlaca.innerText = veiculo.placa;
-      if (elTempo) elTempo.innerText = `${diffMinutos} min`;
-      if (elTolerancia) elTolerancia.innerText = isIsento ? 'Isento (Até 15 min)' : 'Não aplicável';
-      if (elValor) elValor.innerText = `R$ ${valorTotal.toFixed(2)}`;
-
-      if (modalCheckout) modalCheckout.classList.remove('hidden');
-    }
-
-    function fecharModal() {
-      const modalCheckout = document.getElementById('modal-checkout');
-      if (modalCheckout) modalCheckout.classList.add('hidden');
-      vCheckoutIdx = null;
-    }
-
-    function confirmarSaida() {
-      if (vCheckoutIdx === null || !patios[vCheckoutIdx]) return;
-      
-      const veiculo = patios[vCheckoutIdx];
-      const { valorTotal } = calcularCobranca(veiculo);
-
-      faturamento += valorTotal;
-      patios.splice(vCheckoutIdx, 1);
-      
-      salvarEstado();
-      fecharModal();
-      atualizar();
-      renderizarPlacasAutorizadas();
-      mostrarToast('success', 'Saída Registrada', `Pagamento de R$ ${valorTotal.toFixed(2)} confirmado.`);
-    }
-
-    // ============================================
-    // SALVAR ESTADO
-    // ============================================
-    function salvarEstado() {
-      localStorage.setItem('flashpark_patio', JSON.stringify(patios));
-      localStorage.setItem('flashpark_caixa', faturamento.toString());
-      localStorage.setItem('flashpark_placas', JSON.stringify(placasAutorizadas));
-    }
-
-    // ============================================
-    // RENDERIZAÇÃO
-    // ============================================
-    function atualizar() {
-      renderizarKPIs();
-      renderizarMapa();
-      renderizarTabela();
-    }
-
-    function renderizarKPIs() {
-      const totalEl = document.getElementById('kpi-total');
-      const ocupadasEl = document.getElementById('kpi-ocupadas');
-      const livresEl = document.getElementById('kpi-livres');
-      const faturamentoEl = document.getElementById('kpi-faturamento');
-      const totalVeiculosEl = document.getElementById('total-veiculos');
-
-      if (totalEl) totalEl.innerText = TOTAL_VAGAS;
-      if (ocupadasEl) ocupadasEl.innerText = patios.length;
-      if (livresEl) livresEl.innerText = TOTAL_VAGAS - patios.length;
-      if (faturamentoEl) faturamentoEl.innerText = `R$ ${faturamento.toFixed(2)}`;
-      if (totalVeiculosEl) totalVeiculosEl.textContent = patios.length;
-    }
-
-    function renderizarMapa() {
-      const grid = document.getElementById('grid-vagas');
-      if (!grid) return;
-      
-      grid.innerHTML = '';
-
-      for (let i = 1; i <= TOTAL_VAGAS; i++) {
-        const veiculo = patios.find(v => v.vaga === i);
-        const card = document.createElement('div');
-        
-        if (veiculo) {
-          card.className = "vaga-card vaga-ocupada";
-          card.onclick = () => abrirCheckout(patios.indexOf(veiculo));
-          card.innerHTML = `
-            <span class="text-[10px] block text-gold/50 font-bold">VAGA ${i}</span>
-            <span class="font-mono text-xs font-bold placa-text">${veiculo.placa}</span>
-            <span class="text-[8px] block text-white/30 mt-0.5 truncate max-w-full">${veiculo.modelo}</span>
-          `;
-        } else {
-          card.className = "vaga-card vaga-livre";
-          card.innerHTML = `
-            <span class="vaga-number">VAGA ${i}</span>
-            <span class="text-xs status-text">LIVRE</span>
-          `;
-        }
-        grid.appendChild(card);
+    if (!validarFormatoPlaca(placa)) {
+      inputPlaca.className = 'input-luxo font-mono uppercase error';
+      if (statusDiv) statusDiv.classList.add('hidden');
+      if (mensagemDiv) {
+        mensagemDiv.classList.remove('hidden');
+        mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
+        mensagemDiv.textContent = '⚠️ Formato inválido';
       }
+      if (btnEntrada) btnEntrada.disabled = true;
+      return;
     }
 
-    function renderizarTabela() {
-      const tbody = document.getElementById('tabela-veiculos');
-      const buscaInput = document.getElementById('busca');
-      const empty = document.getElementById('empty-state');
-      
-      if (!tbody) return;
+    if (placaIsOcupada(placa)) {
+      const veiculoAtual = patios.find(v => v.placa === placa);
+      inputPlaca.className = 'input-luxo font-mono uppercase error';
+      if (statusDiv) statusDiv.classList.add('hidden');
+      if (mensagemDiv) {
+        mensagemDiv.classList.remove('hidden');
+        mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
+        mensagemDiv.textContent = `⚠️ Placa já no pátio (${veiculoAtual ? veiculoAtual.modelo : 'Veículo'})`;
+      }
+      if (btnEntrada) btnEntrada.disabled = true;
+      return;
+    }
 
-      const busca = buscaInput ? buscaInput.value.toLowerCase() : '';
-      tbody.innerHTML = '';
-
-      const filtrados = patios.filter(v => 
-        v.placa.toLowerCase().includes(busca) || 
-        v.modelo.toLowerCase().includes(busca)
-      );
-
-      if (filtrados.length === 0) {
-        if (empty) empty.classList.remove('hidden');
+    inputPlaca.className = 'input-luxo font-mono uppercase success';
+    if (statusDiv) statusDiv.classList.remove('hidden');
+    if (mensagemDiv) {
+      mensagemDiv.classList.remove('hidden');
+      if (placaIsAutorizada(placa)) {
+        mensagemDiv.className = 'text-[10px] mt-1 text-emerald-400';
+        mensagemDiv.textContent = '✅ Autorizada';
       } else {
-        if (empty) empty.classList.add('hidden');
-        filtrados.forEach((veiculo) => {
-          const idxReal = patios.indexOf(veiculo);
-          const horaEntrada = new Date(veiculo.entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><span class="text-gold font-bold">#${veiculo.vaga}</span></td>
-            <td><span class="font-mono font-bold text-white/90">${veiculo.placa}</span></td>
-            <td>${veiculo.modelo}</td>
-            <td>${horaEntrada}</td>
-            <td class="text-right">
-              <button onclick="abrirCheckout(${idxReal})" class="btn-luxo-outline text-xs py-1 px-3" type="button">
-                <i class="fa-solid fa-right-from-bracket mr-1"></i> Saída
-              </button>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
+        mensagemDiv.className = 'text-[10px] mt-1 text-amber-400';
+        mensagemDiv.textContent = '⚠️ Não autorizada';
       }
     }
+    if (btnEntrada) btnEntrada.disabled = false;
+  }
 
-    // Inicialização segura após o carregamento do DOM
-    document.addEventListener('DOMContentLoaded', () => {
+  // Máscara e escutadores de input
+  if (inputPlaca) {
+    inputPlaca.addEventListener('input', function() {
+      let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (valor.length > 3 && valor.length <= 7) {
+        valor = valor.substring(0, 3) + '-' + valor.substring(3);
+      }
+      this.value = valor;
+      validarPlacaEmTempoReal();
+    });
+  }
+
+  if (inputNovaPlaca) {
+    inputNovaPlaca.addEventListener('input', function() {
+      let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (valor.length > 3 && valor.length <= 7) {
+        valor = valor.substring(0, 3) + '-' + valor.substring(3);
+      }
+      this.value = valor;
+    });
+  }
+
+  // Busca em tempo real
+  const buscaInput = document.getElementById('busca');
+  if (buscaInput) {
+    buscaInput.addEventListener('input', () => renderizarTabela());
+  }
+
+  // ============================================
+  // PLACAS AUTORIZADAS
+  // ============================================
+  function adicionarPlaca(placa) {
+    const placaLimpa = placa.toUpperCase().trim();
+    if (!placaLimpa) { mostrarToast('error', 'Erro', 'Digite uma placa.'); return false; }
+    if (!validarFormatoPlaca(placaLimpa)) { mostrarToast('error', 'Erro', 'Formato inválido.'); return false; }
+    if (placasAutorizadas.includes(placaLimpa)) { mostrarToast('warning', 'Aviso', 'Já cadastrada.'); return false; }
+
+    placasAutorizadas.push(placaLimpa);
+    salvarEstado();
+    renderizarPlacasAutorizadas();
+    mostrarToast('success', 'Sucesso', `Placa ${placaLimpa} autorizada.`);
+    return true;
+  }
+
+  function removerPlaca(placa) {
+    if (placaIsOcupada(placa)) {
+      mostrarToast('error', 'Erro', 'Veículo está no pátio!');
+      return;
+    }
+    placasAutorizadas = placasAutorizadas.filter(p => p !== placa);
+    salvarEstado();
+    renderizarPlacasAutorizadas();
+    mostrarToast('info', 'Info', `Placa ${placa} removida.`);
+  }
+
+  function limparTodasPlacas() {
+    const emUso = placasAutorizadas.filter(p => patios.some(v => v.placa === p));
+    if (emUso.length > 0) {
+      mostrarToast('error', 'Erro', `Placas em uso: ${emUso.join(', ')}`);
+      return;
+    }
+    if (placasAutorizadas.length === 0) { mostrarToast('warning', 'Aviso', 'Nenhuma placa.'); return; }
+    if (confirm(`Remover ${placasAutorizadas.length} placas?`)) {
+      placasAutorizadas = [];
+      salvarEstado();
+      renderizarPlacasAutorizadas();
+      mostrarToast('success', 'Sucesso', 'Todas removidas.');
+    }
+  }
+
+  // ============================================
+  // IMPORTAÇÃO DE CARROS DE LUXO COM VALIDAÇÃO
+  // ============================================
+  function importarCarrosLuxo() {
+    let adicionadas = 0;
+    const jaExistentes = [];
+
+    CARROS_LUXO.forEach(({ placa, modelo }) => {
+      // Valida o nome do carro
+      const modeloValido = modelo && modelo.length > 3;
+
+      if (!modeloValido) {
+        console.warn(`Modelo inválido para placa ${placa}: "${modelo}"`);
+        return;
+      }
+
+      if (!placasAutorizadas.includes(placa)) {
+        placasAutorizadas.push(placa);
+        adicionadas++;
+      } else {
+        jaExistentes.push(placa);
+      }
+    });
+
+    salvarEstado();
+    renderizarPlacasAutorizadas();
+
+    let mensagem = `${adicionadas} carros de luxo importados!`;
+    if (jaExistentes.length > 0) {
+      mensagem += ` (${jaExistentes.length} já existentes)`;
+    }
+
+    if (adicionadas === 0 && jaExistentes.length === 0) {
+      mostrarToast('warning', 'Aviso', 'Nenhum carro de luxo disponível para importar.');
+    } else {
+      mostrarToast('success', 'Sucesso', mensagem);
+    }
+
+    // Log detalhado dos carros importados
+    console.log('Carros de luxo importados:');
+    CARROS_LUXO.forEach(c => {
+      console.log(`  ${c.placa} - ${c.modelo} (${placasAutorizadas.includes(c.placa) ? '✅' : '❌'})`);
+    });
+  }
+
+  // ============================================
+  // RENDERIZAR PLACAS AUTORIZADAS
+  // ============================================
+  function renderizarPlacasAutorizadas() {
+    const container = document.getElementById('lista-placas-autorizadas');
+    const total = document.getElementById('total-placas');
+
+    if (total) total.textContent = placasAutorizadas.length;
+    if (!container) return;
+
+    if (placasAutorizadas.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" style="padding:20px 0;">
+          <i class="fa-solid fa-inbox" style="font-size:20px;"></i>
+          <p style="font-size:11px;">Nenhuma placa autorizada</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = placasAutorizadas.map(p => {
+      const ocupado = patios.some(v => v.placa === p);
+      // Encontra o modelo do carro se estiver no pátio
+      const veiculo = patios.find(v => v.placa === p);
+      const modeloInfo = veiculo ? veiculo.modelo : '';
+      return `
+        <div class="badge-placa">
+          <span>
+            ${p}
+            ${modeloInfo ? ` <span style="font-family:sans-serif;font-weight:300;font-size:9px;color:rgba(255,255,255,0.2);">${modeloInfo}</span>` : ''}
+            ${ocupado ? '<span class="ocupado"><i class="fa-solid fa-circle"></i> ocupado</span>' : ''}
+          </span>
+          <button onclick="removerPlaca('${p}')" class="remove-btn" type="button">
+            <i class="fa-solid fa-times"></i>
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ============================================
+  // TOAST
+  // ============================================
+  function mostrarToast(tipo, titulo, mensagem) {
+    const toast = document.getElementById('toast');
+    const icon = document.getElementById('toast-icon');
+    const titleEl = document.getElementById('toast-title');
+    const msgEl = document.getElementById('toast-message');
+
+    if (!toast) return;
+
+    const cores = {
+      success: '#4caf50',
+      error: '#ef5350',
+      warning: '#ffa726',
+      info: '#42a5f5'
+    };
+
+    const icones = {
+      success: '<i class="fa-solid fa-circle-check" style="color:#4caf50;"></i>',
+      error: '<i class="fa-solid fa-circle-xmark" style="color:#ef5350;"></i>',
+      warning: '<i class="fa-solid fa-triangle-exclamation" style="color:#ffa726;"></i>',
+      info: '<i class="fa-solid fa-circle-info" style="color:#42a5f5;"></i>'
+    };
+
+    if (icon) icon.innerHTML = icones[tipo] || icones.info;
+    if (titleEl) titleEl.textContent = titulo;
+    if (msgEl) msgEl.textContent = mensagem;
+
+    // Reset do border-color
+    toast.style.borderColor = cores[tipo] ? `${cores[tipo]}33` : 'rgba(212,175,55,0.15)';
+
+    toast.classList.remove('toast-hidden');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
+      toast.classList.add('toast-hidden');
+    }, 4000);
+  }
+
+  // ============================================
+  // ENTRADA DE VEÍCULO
+  // ============================================
+  if (formEntrada) {
+    formEntrada.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const placa = inputPlaca ? inputPlaca.value.toUpperCase().trim() : '';
+      const modelo = inputModelo ? inputModelo.value.trim() || 'Não informado' : 'Não informado';
+      const categoriaSelect = document.getElementById('categoria');
+      const categoriaVal = categoriaSelect ? categoriaSelect.value : '1';
+
+      if (!placa) { mostrarToast('error', 'Erro', 'Digite a placa.'); return; }
+      if (!validarFormatoPlaca(placa)) { mostrarToast('error', 'Erro', 'Formato inválido.'); return; }
+
+      if (placaIsOcupada(placa)) {
+        const veiculoExistente = patios.find(v => v.placa === placa);
+        mostrarToast('error', 'Erro', `A placa ${placa} já pertence ao veículo "${veiculoExistente.modelo}".`);
+        return;
+      }
+
+      if (patios.length >= TOTAL_VAGAS) { mostrarToast('error', 'Erro', 'Pátio lotado!'); return; }
+
+      if (!placaIsAutorizada(placa)) {
+        if (!confirm(`Placa "${placa}" não está autorizada. Deseja adicioná-la?`)) {
+          return;
+        }
+        placasAutorizadas.push(placa);
+        salvarEstado();
+        renderizarPlacasAutorizadas();
+      }
+
+      const vagasOcupadas = patios.map(v => v.vaga);
+      let vagaLivre = 1;
+      while (vagasOcupadas.includes(vagaLivre)) vagaLivre++;
+
+      patios.push({
+        vaga: vagaLivre,
+        placa: placa,
+        modelo: modelo,
+        categoria: categoriaVal,
+        entrada: new Date().toISOString()
+      });
+
+      salvarEstado();
+      formEntrada.reset();
+
+      if (inputPlaca) inputPlaca.className = 'input-luxo font-mono uppercase';
+
+      const statusDiv = document.getElementById('placa-status');
+      const mensagemDiv = document.getElementById('placa-mensagem');
+      if (statusDiv) statusDiv.classList.add('hidden');
+      if (mensagemDiv) mensagemDiv.classList.add('hidden');
+      if (btnEntrada) btnEntrada.disabled = false;
+
       atualizar();
       renderizarPlacasAutorizadas();
+      mostrarToast('success', 'Entrada Registrada', `${placa} (${modelo}) - Vaga #${vagaLivre}`);
     });
-  </script>
+  }
+
+  // ============================================
+  // CADASTRO DE NOVA PLACA
+  // ============================================
+  if (formCadastro) {
+    formCadastro.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!inputNovaPlaca) return;
+      const placa = inputNovaPlaca.value.toUpperCase().trim();
+      if (adicionarPlaca(placa)) {
+        inputNovaPlaca.value = '';
+      }
+    });
+  }
+
+  // ============================================
+  // CHECKOUT E MODAL
+  // ============================================
+  function calcularCobranca(veiculo) {
+    const agora = new Date();
+    const entrada = new Date(veiculo.entrada);
+    const diffMs = agora - entrada;
+    const diffMinutos = Math.max(1, Math.ceil(diffMs / (1000 * 60)));
+    const tarifaMinuto = TARIFAS_POR_MINUTO[veiculo.categoria] || (10.00 / 60);
+
+    const isIsento = diffMinutos <= 15;
+    const valorTotal = isIsento ? 0 : diffMinutos * tarifaMinuto;
+
+    return { diffMinutos, isIsento, valorTotal };
+  }
+
+  function abrirCheckout(idx) {
+    if (!patios[idx]) return;
+    vCheckoutIdx = idx;
+    const veiculo = patios[idx];
+    const { diffMinutos, isIsento, valorTotal } = calcularCobranca(veiculo);
+
+    const elPlaca = document.getElementById('modal-placa');
+    const elTempo = document.getElementById('modal-tempo');
+    const elTolerancia = document.getElementById('modal-tolerancia');
+    const elValor = document.getElementById('modal-valor');
+    const modalCheckout = document.getElementById('modal-checkout');
+
+    if (elPlaca) elPlaca.innerText = veiculo.placa;
+    if (elTempo) elTempo.innerText = `${diffMinutos} min`;
+    if (elTolerancia) elTolerancia.innerText = isIsento ? '🟢 Isento (até 15 min)' : '🔴 Cobrança normal';
+    if (elValor) elValor.innerText = `R$ ${valorTotal.toFixed(2)}`;
+
+    if (modalCheckout) modalCheckout.classList.remove('hidden');
+  }
+
+  function fecharModal() {
+    const modalCheckout = document.getElementById('modal-checkout');
+    if (modalCheckout) modalCheckout.classList.add('hidden');
+    vCheckoutIdx = null;
+  }
+
+  function confirmarSaida() {
+    if (vCheckoutIdx === null || !patios[vCheckoutIdx]) return;
+
+    const veiculo = patios[vCheckoutIdx];
+    const { valorTotal } = calcularCobranca(veiculo);
+
+    faturamento += valorTotal;
+    patios.splice(vCheckoutIdx, 1);
+
+    salvarEstado();
+    fecharModal();
+    atualizar();
+    renderizarPlacasAutorizadas();
+    mostrarToast('success', 'Saída Registrada', `Pagamento de R$ ${valorTotal.toFixed(2)} confirmado.`);
+  }
+
+  // ============================================
+  // SALVAR ESTADO
+  // ============================================
+  function salvarEstado() {
+    localStorage.setItem('flashpark_patio', JSON.stringify(patios));
+    localStorage.setItem('flashpark_caixa', faturamento.toString());
+    localStorage.setItem('flashpark_placas', JSON.stringify(placasAutorizadas));
+  }
+
+  // ============================================
+  // RENDERIZAÇÃO
+  // ============================================
+  function atualizar() {
+    renderizarKPIs();
+    renderizarMapa();
+    renderizarTabela();
+  }
+
+  function renderizarKPIs() {
+    const totalEl = document.getElementById('kpi-total');
+    const ocupadasEl = document.getElementById('kpi-ocupadas');
+    const livresEl = document.getElementById('kpi-livres');
+    const faturamentoEl = document.getElementById('kpi-faturamento');
+    const totalVeiculosEl = document.getElementById('total-veiculos');
+
+    if (totalEl) totalEl.innerText = TOTAL_VAGAS;
+    if (ocupadasEl) ocupadasEl.innerText = patios.length;
+    if (livresEl) livresEl.innerText = TOTAL_VAGAS - patios.length;
+    if (faturamentoEl) faturamentoEl.innerText = `R$ ${faturamento.toFixed(2)}`;
+    if (totalVeiculosEl) totalVeiculosEl.textContent = patios.length;
+  }
+
+  function renderizarMapa() {
+    const grid = document.getElementById('grid-vagas');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    for (let i = 1; i <= TOTAL_VAGAS; i++) {
+      const veiculo = patios.find(v => v.vaga === i);
+      const card = document.createElement('div');
+
+      if (veiculo) {
+        card.className = "vaga-card vaga-ocupada";
+        card.onclick = () => abrirCheckout(patios.indexOf(veiculo));
+        card.innerHTML = `
+          <span class="vaga-number">#${i}</span>
+          <span class="placa-text">${veiculo.placa}</span>
+          <span style="font-size:8px;color:rgba(255,255,255,0.15);margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${veiculo.modelo}</span>
+        `;
+      } else {
+        card.className = "vaga-card vaga-livre";
+        card.innerHTML = `
+          <span class="vaga-number">#${i}</span>
+          <span class="status-text">Livre</span>
+        `;
+      }
+      grid.appendChild(card);
+    }
+  }
+
+  function renderizarTabela() {
+    const tbody = document.getElementById('tabela-veiculos');
+    const buscaInput = document.getElementById('busca');
+    const empty = document.getElementById('empty-state');
+
+    if (!tbody) return;
+
+    const busca = buscaInput ? buscaInput.value.toLowerCase() : '';
+    tbody.innerHTML = '';
+
+    const filtrados = patios.filter(v =>
+      v.placa.toLowerCase().includes(busca) ||
+      v.modelo.toLowerCase().includes(busca)
+    );
+
+    if (filtrados.length === 0) {
+      if (empty) empty.classList.remove('hidden');
+    } else {
+      if (empty) empty.classList.add('hidden');
+      filtrados.forEach((veiculo) => {
+        const idxReal = patios.indexOf(veiculo);
+        const horaEntrada = new Date(veiculo.entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="text-gold">#${veiculo.vaga}</span></td>
+          <td><span class="font-mono" style="color:#d4af37;">${veiculo.placa}</span></td>
+          <td style="color:rgba(255,255,255,0.6);">${veiculo.modelo}</td>
+          <td style="color:rgba(255,255,255,0.3);font-size:12px;">${horaEntrada}</td>
+          <td class="text-right">
+            <button onclick="abrirCheckout(${idxReal})" class="btn-luxo-outline btn-sm" type="button">
+              <i class="fa-solid fa-right-from-bracket"></i> Saída
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  }
+
+  // ============================================
+  // INICIALIZAÇÃO
+  // ============================================
+  document.addEventListener('DOMContentLoaded', () => {
+    atualizar();
+    renderizarPlacasAutorizadas();
+
+    // Validação inicial
+    if (inputPlaca) {
+      validarPlacaEmTempoReal();
+    }
+
+    // Exibe status dos carros de luxo no console
+    console.log('===== CARROS DE LUXO DISPONÍVEIS =====');
+    CARROS_LUXO.forEach(c => {
+      const existe = placasAutorizadas.includes(c.placa);
+      console.log(`${c.placa} - ${c.modelo} ${existe ? '✅' : '⬜'}`);
+    });
+    console.log('======================================');
+  });
+</script>
+
 </body>
 </html>
