@@ -1,13 +1,24 @@
-<script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlashPark - Sistema de Estacionamento</title>
+</head>
+<body>
+
+  <!-- Estrutura do formulário e elementos do sistema -->
+
+  <script>
     // ============================================
     // CONFIGURAÇÕES
     // ============================================
     const TOTAL_VAGAS = 20;
     
     // Tarifas convertidas para valor por MINUTO (R$/minuto)
-    // Categoria 1 (Passeio): R$ 10,00/h -> ~R$ 0,167/min
-    // Categoria 2 (Moto): R$ 5,00/h -> ~R$ 0,083/min
-    // Categoria 3 (Utilitário): R$ 15,00/h -> ~R$ 0,250/min
+    // Categoria 1 (Passeio): R$ 10,00/h -> R$ 0,1667/min
+    // Categoria 2 (Moto): R$ 5,00/h -> R$ 0,0833/min
+    // Categoria 3 (Utilitário): R$ 15,00/h -> R$ 0,2500/min
     const TARIFAS_POR_MINUTO = { 
       "1": 10.00 / 60, 
       "2": 5.00 / 60, 
@@ -49,9 +60,9 @@
     // FUNÇÕES DE VALIDAÇÃO
     // ============================================
     function validarFormatoPlaca(placa) {
-      const padraoAntigo = /^[A-Z]{3}-?[0-9]{4}$/;
+      const placaLimpa = placa.replace(/[^A-Z0-9]/g, '');
+      const padraoAntigo = /^[A-Z]{3}[0-9]{4}$/;
       const padraoMercosul = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
-      const placaLimpa = placa.replace(/-/g, '');
       return padraoAntigo.test(placaLimpa) || padraoMercosul.test(placaLimpa);
     }
 
@@ -67,71 +78,81 @@
     // VALIDAÇÃO EM TEMPO REAL
     // ============================================
     function validarPlacaEmTempoReal() {
+      if (!inputPlaca) return;
+
       const placa = inputPlaca.value.toUpperCase().trim();
       const statusDiv = document.getElementById('placa-status');
       const mensagemDiv = document.getElementById('placa-mensagem');
 
       if (placa.length === 0) {
         inputPlaca.className = 'input-luxo font-mono uppercase';
-        statusDiv.classList.add('hidden');
-        mensagemDiv.classList.add('hidden');
-        btnEntrada.disabled = false;
+        if (statusDiv) statusDiv.classList.add('hidden');
+        if (mensagemDiv) mensagemDiv.classList.add('hidden');
+        if (btnEntrada) btnEntrada.disabled = false;
         return;
       }
 
       if (!validarFormatoPlaca(placa)) {
         inputPlaca.className = 'input-luxo font-mono uppercase error';
-        statusDiv.classList.add('hidden');
-        mensagemDiv.classList.remove('hidden');
-        mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
-        mensagemDiv.textContent = '⚠️ Formato inválido';
-        btnEntrada.disabled = true;
+        if (statusDiv) statusDiv.classList.add('hidden');
+        if (mensagemDiv) {
+          mensagemDiv.classList.remove('hidden');
+          mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
+          mensagemDiv.textContent = '⚠️ Formato inválido';
+        }
+        if (btnEntrada) btnEntrada.disabled = true;
         return;
       }
 
       if (placaIsOcupada(placa)) {
         const veiculoAtual = patios.find(v => v.placa === placa);
         inputPlaca.className = 'input-luxo font-mono uppercase error';
-        statusDiv.classList.add('hidden');
-        mensagemDiv.classList.remove('hidden');
-        mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
-        mensagemDiv.textContent = `⚠️ Placa já no pátio (${veiculoAtual ? veiculoAtual.modelo : 'Veículo'})`;
-        btnEntrada.disabled = true;
+        if (statusDiv) statusDiv.classList.add('hidden');
+        if (mensagemDiv) {
+          mensagemDiv.classList.remove('hidden');
+          mensagemDiv.className = 'text-[10px] mt-1 text-rose-400';
+          mensagemDiv.textContent = `⚠️ Placa já no pátio (${veiculoAtual ? veiculoAtual.modelo : 'Veículo'})`;
+        }
+        if (btnEntrada) btnEntrada.disabled = true;
         return;
       }
 
       inputPlaca.className = 'input-luxo font-mono uppercase success';
-      statusDiv.classList.remove('hidden');
-      mensagemDiv.classList.remove('hidden');
-
-      if (placaIsAutorizada(placa)) {
-        mensagemDiv.className = 'text-[10px] mt-1 text-emerald-400';
-        mensagemDiv.textContent = '✅ Autorizada';
-        btnEntrada.disabled = false;
-      } else {
-        mensagemDiv.className = 'text-[10px] mt-1 text-amber-400';
-        mensagemDiv.textContent = '⚠️ Não autorizada';
-        btnEntrada.disabled = false;
+      if (statusDiv) statusDiv.classList.remove('hidden');
+      if (mensagemDiv) {
+        mensagemDiv.classList.remove('hidden');
+        if (placaIsAutorizada(placa)) {
+          mensagemDiv.className = 'text-[10px] mt-1 text-emerald-400';
+          mensagemDiv.textContent = '✅ Autorizada';
+        } else {
+          mensagemDiv.className = 'text-[10px] mt-1 text-amber-400';
+          mensagemDiv.textContent = '⚠️ Não autorizada';
+        }
       }
+      if (btnEntrada) btnEntrada.disabled = false;
     }
 
-    // Máscara automática para placa
-    inputPlaca.addEventListener('input', function(e) {
-      let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-      if (valor.length > 3 && valor.length <= 7) {
-        valor = valor.substring(0, 3) + '-' + valor.substring(3);
-      }
-      this.value = valor;
-      validarPlacaEmTempoReal();
-    });
+    // Máscara e escutadores de input
+    if (inputPlaca) {
+      inputPlaca.addEventListener('input', function() {
+        let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (valor.length > 3 && valor.length <= 7) {
+          valor = valor.substring(0, 3) + '-' + valor.substring(3);
+        }
+        this.value = valor;
+        validarPlacaEmTempoReal();
+      });
+    }
 
-    inputNovaPlaca.addEventListener('input', function(e) {
-      let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-      if (valor.length > 3 && valor.length <= 7) {
-        valor = valor.substring(0, 3) + '-' + valor.substring(3);
-      }
-      this.value = valor;
-    });
+    if (inputNovaPlaca) {
+      inputNovaPlaca.addEventListener('input', function() {
+        let valor = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (valor.length > 3 && valor.length <= 7) {
+          valor = valor.substring(0, 3) + '-' + valor.substring(3);
+        }
+        this.value = valor;
+      });
+    }
 
     // ============================================
     // PLACAS AUTORIZADAS
@@ -192,7 +213,8 @@
       const container = document.getElementById('lista-placas-autorizadas');
       const total = document.getElementById('total-placas');
       
-      total.textContent = placasAutorizadas.length;
+      if (total) total.textContent = placasAutorizadas.length;
+      if (!container) return;
       
       if (placasAutorizadas.length === 0) {
         container.innerHTML = `
@@ -212,7 +234,7 @@
               ${p}
               ${ocupado ? '<span class="ocupado"><i class="fa-solid fa-circle"></i> ocupado</span>' : ''}
             </span>
-            <button onclick="removerPlaca('${p}')" class="remove-btn">
+            <button onclick="removerPlaca('${p}')" class="remove-btn" type="button">
               <i class="fa-solid fa-times"></i>
             </button>
           </div>
@@ -229,6 +251,8 @@
       const titleEl = document.getElementById('toast-title');
       const msgEl = document.getElementById('toast-message');
       
+      if (!toast) return;
+
       const icones = {
         success: '<i class="fa-solid fa-check-circle text-emerald-400"></i>',
         error: '<i class="fa-solid fa-circle-xmark text-rose-400"></i>',
@@ -236,9 +260,9 @@
         info: '<i class="fa-solid fa-circle-info text-indigo-400"></i>'
       };
       
-      icon.innerHTML = icones[tipo] || icones.info;
-      titleEl.textContent = titulo;
-      msgEl.textContent = mensagem;
+      if (icon) icon.innerHTML = icones[tipo] || icones.info;
+      if (titleEl) titleEl.textContent = titulo;
+      if (msgEl) msgEl.textContent = mensagem;
       
       toast.classList.remove('toast-hidden');
       clearTimeout(toast._timeout);
@@ -250,66 +274,77 @@
     // ============================================
     // ENTRADA DE VEÍCULO
     // ============================================
-    formEntrada.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const placa = inputPlaca.value.toUpperCase().trim();
-      const modelo = inputModelo.value.trim();
-      
-      if (!placa) { mostrarToast('error', 'Erro', 'Digite a placa.'); return; }
-      if (!validarFormatoPlaca(placa)) { mostrarToast('error', 'Erro', 'Formato inválido.'); return; }
-      
-      if (placaIsOcupada(placa)) { 
-        const veiculoExistente = patios.find(v => v.placa === placa);
-        mostrarToast('error', 'Erro', `A placa ${placa} já pertence ao veículo "${veiculoExistente.modelo}".`); 
-        return; 
-      }
-
-      if (patios.length >= TOTAL_VAGAS) { mostrarToast('error', 'Erro', 'Pátio lotado!'); return; }
-      
-      if (!placaIsAutorizada(placa)) {
-        if (!confirm(`Placa "${placa}" não está autorizada. Deseja adicioná-la?`)) {
-          return;
+    if (formEntrada) {
+      formEntrada.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const placa = inputPlaca ? inputPlaca.value.toUpperCase().trim() : '';
+        const modelo = inputModelo ? inputModelo.value.trim() : 'Não informado';
+        const categoriaSelect = document.getElementById('categoria');
+        const categoriaVal = categoriaSelect ? categoriaSelect.value : '1';
+        
+        if (!placa) { mostrarToast('error', 'Erro', 'Digite a placa.'); return; }
+        if (!validarFormatoPlaca(placa)) { mostrarToast('error', 'Erro', 'Formato inválido.'); return; }
+        
+        if (placaIsOcupada(placa)) { 
+          const veiculoExistente = patios.find(v => v.placa === placa);
+          mostrarToast('error', 'Erro', `A placa ${placa} já pertence ao veículo "${veiculoExistente.modelo}".`); 
+          return; 
         }
-        placasAutorizadas.push(placa);
+
+        if (patios.length >= TOTAL_VAGAS) { mostrarToast('error', 'Erro', 'Pátio lotado!'); return; }
+        
+        if (!placaIsAutorizada(placa)) {
+          if (!confirm(`Placa "${placa}" não está autorizada. Deseja adicioná-la?`)) {
+            return;
+          }
+          placasAutorizadas.push(placa);
+          salvarEstado();
+          renderizarPlacasAutorizadas();
+        }
+        
+        const vagasOcupadas = patios.map(v => v.vaga);
+        let vagaLivre = 1;
+        while (vagasOcupadas.includes(vagaLivre)) vagaLivre++;
+        
+        patios.push({
+          vaga: vagaLivre,
+          placa: placa,
+          modelo: modelo,
+          categoria: categoriaVal,
+          entrada: new Date().toISOString()
+        });
+        
         salvarEstado();
+        formEntrada.reset();
+        
+        if (inputPlaca) inputPlaca.className = 'input-luxo font-mono uppercase';
+        
+        const statusDiv = document.getElementById('placa-status');
+        const mensagemDiv = document.getElementById('placa-mensagem');
+        if (statusDiv) statusDiv.classList.add('hidden');
+        if (mensagemDiv) mensagemDiv.classList.add('hidden');
+        if (btnEntrada) btnEntrada.disabled = false;
+        
+        atualizar();
         renderizarPlacasAutorizadas();
-      }
-      
-      const vagasOcupadas = patios.map(v => v.vaga);
-      let vagaLivre = 1;
-      while (vagasOcupadas.includes(vagaLivre)) vagaLivre++;
-      
-      patios.push({
-        vaga: vagaLivre,
-        placa: placa,
-        modelo: modelo,
-        categoria: document.getElementById('categoria').value,
-        entrada: new Date().toISOString()
+        mostrarToast('success', 'Entrada Registrada', `${placa} (${modelo}) - Vaga #${vagaLivre}`);
       });
-      
-      salvarEstado();
-      formEntrada.reset();
-      inputPlaca.className = 'input-luxo font-mono uppercase';
-      document.getElementById('placa-status').classList.add('hidden');
-      document.getElementById('placa-mensagem').classList.add('hidden');
-      btnEntrada.disabled = false;
-      
-      atualizar();
-      renderizarPlacasAutorizadas();
-      mostrarToast('success', 'Entrada Registrada', `${placa} (${modelo}) - Vaga #${vagaLivre}`);
-    });
+    }
 
     // ============================================
     // CADASTRO DE NOVA PLACA
     // ============================================
-    formCadastro.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const placa = inputNovaPlaca.value.toUpperCase().trim();
-      if (adicionarPlaca(placa)) {
-        inputNovaPlaca.value = '';
-      }
-    });
+    if (formCadastro) {
+      formCadastro.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!inputNovaPlaca) return;
+        const placa = inputNovaPlaca.value.toUpperCase().trim();
+        if (adicionarPlaca(placa)) {
+          inputNovaPlaca.value = '';
+        }
+      });
+    }
 
     // ============================================
     // CHECKOUT E MODAL (CÁLCULO POR MINUTO)
@@ -332,25 +367,33 @@
     }
 
     function abrirCheckout(idx) {
+      if (!patios[idx]) return;
       vCheckoutIdx = idx;
       const veiculo = patios[idx];
       const { diffMinutos, isIsento, valorTotal } = calcularCobranca(veiculo);
 
-      document.getElementById('modal-placa').innerText = veiculo.placa;
-      document.getElementById('modal-tempo').innerText = `${diffMinutos} min`;
-      document.getElementById('modal-tolerancia').innerText = isIsento ? 'Isento (Até 15 min)' : 'Não aplicável';
-      document.getElementById('modal-valor').innerText = `R$ ${valorTotal.toFixed(2)}`;
+      const elPlaca = document.getElementById('modal-placa');
+      const elTempo = document.getElementById('modal-tempo');
+      const elTolerancia = document.getElementById('modal-tolerancia');
+      const elValor = document.getElementById('modal-valor');
+      const modalCheckout = document.getElementById('modal-checkout');
 
-      document.getElementById('modal-checkout').classList.remove('hidden');
+      if (elPlaca) elPlaca.innerText = veiculo.placa;
+      if (elTempo) elTempo.innerText = `${diffMinutos} min`;
+      if (elTolerancia) elTolerancia.innerText = isIsento ? 'Isento (Até 15 min)' : 'Não aplicável';
+      if (elValor) elValor.innerText = `R$ ${valorTotal.toFixed(2)}`;
+
+      if (modalCheckout) modalCheckout.classList.remove('hidden');
     }
 
     function fecharModal() {
-      document.getElementById('modal-checkout').classList.add('hidden');
+      const modalCheckout = document.getElementById('modal-checkout');
+      if (modalCheckout) modalCheckout.classList.add('hidden');
       vCheckoutIdx = null;
     }
 
     function confirmarSaida() {
-      if (vCheckoutIdx === null) return;
+      if (vCheckoutIdx === null || !patios[vCheckoutIdx]) return;
       
       const veiculo = patios[vCheckoutIdx];
       const { valorTotal } = calcularCobranca(veiculo);
@@ -384,15 +427,23 @@
     }
 
     function renderizarKPIs() {
-      document.getElementById('kpi-total').innerText = TOTAL_VAGAS;
-      document.getElementById('kpi-ocupadas').innerText = patios.length;
-      document.getElementById('kpi-livres').innerText = TOTAL_VAGAS - patios.length;
-      document.getElementById('kpi-faturamento').innerText = `R$ ${faturamento.toFixed(2)}`;
-      document.getElementById('total-veiculos').textContent = patios.length;
+      const totalEl = document.getElementById('kpi-total');
+      const ocupadasEl = document.getElementById('kpi-ocupadas');
+      const livresEl = document.getElementById('kpi-livres');
+      const faturamentoEl = document.getElementById('kpi-faturamento');
+      const totalVeiculosEl = document.getElementById('total-veiculos');
+
+      if (totalEl) totalEl.innerText = TOTAL_VAGAS;
+      if (ocupadasEl) ocupadasEl.innerText = patios.length;
+      if (livresEl) livresEl.innerText = TOTAL_VAGAS - patios.length;
+      if (faturamentoEl) faturamentoEl.innerText = `R$ ${faturamento.toFixed(2)}`;
+      if (totalVeiculosEl) totalVeiculosEl.textContent = patios.length;
     }
 
     function renderizarMapa() {
       const grid = document.getElementById('grid-vagas');
+      if (!grid) return;
+      
       grid.innerHTML = '';
 
       for (let i = 1; i <= TOTAL_VAGAS; i++) {
@@ -420,9 +471,12 @@
 
     function renderizarTabela() {
       const tbody = document.getElementById('tabela-veiculos');
-      const busca = document.getElementById('busca').value.toLowerCase();
+      const buscaInput = document.getElementById('busca');
       const empty = document.getElementById('empty-state');
       
+      if (!tbody) return;
+
+      const busca = buscaInput ? buscaInput.value.toLowerCase() : '';
       tbody.innerHTML = '';
 
       const filtrados = patios.filter(v => 
@@ -431,9 +485,9 @@
       );
 
       if (filtrados.length === 0) {
-        empty.classList.remove('hidden');
+        if (empty) empty.classList.remove('hidden');
       } else {
-        empty.classList.add('hidden');
+        if (empty) empty.classList.add('hidden');
         filtrados.forEach((veiculo) => {
           const idxReal = patios.indexOf(veiculo);
           const horaEntrada = new Date(veiculo.entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -444,7 +498,7 @@
             <td>${veiculo.modelo}</td>
             <td>${horaEntrada}</td>
             <td class="text-right">
-              <button onclick="abrirCheckout(${idxReal})" class="btn-luxo-outline text-xs py-1 px-3">
+              <button onclick="abrirCheckout(${idxReal})" class="btn-luxo-outline text-xs py-1 px-3" type="button">
                 <i class="fa-solid fa-right-from-bracket mr-1"></i> Saída
               </button>
             </td>
@@ -454,9 +508,11 @@
       }
     }
 
-    // Inicialização
-    atualizar();
-    renderizarPlacasAutorizadas();
+    // Inicialização segura após o carregamento do DOM
+    document.addEventListener('DOMContentLoaded', () => {
+      atualizar();
+      renderizarPlacasAutorizadas();
+    });
   </script>
 </body>
 </html>
